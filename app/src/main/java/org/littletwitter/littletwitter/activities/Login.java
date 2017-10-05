@@ -8,19 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
+import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
@@ -40,7 +39,7 @@ public class Login extends AppCompatActivity {
     private View loginFormView;
     private OkHttpClient client;
 
-    // TODO: 5/10/17 get and store cookies, extract url
+    // TODO: 5/10/17 extract url, use this async-task template
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,7 @@ public class Login extends AppCompatActivity {
         progressView = findViewById(R.id.login_progress);
 
         // Network
-        PersistentCookieJar persistentCookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
         client = new OkHttpClient.Builder()
                 .cookieJar(persistentCookieJar)
                 .build();
@@ -85,8 +84,7 @@ public class Login extends AppCompatActivity {
         });
 
         progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        progressView.animate().setDuration(shortAnimTime).alpha(
-                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+        progressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 progressView.setVisibility(show ? View.VISIBLE : View.GONE);
