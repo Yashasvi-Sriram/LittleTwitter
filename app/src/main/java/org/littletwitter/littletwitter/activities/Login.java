@@ -36,6 +36,8 @@ public class Login extends AppCompatActivity {
     private View loginFormView;
     private OkHttpClient client;
 
+    // TODO: 5/10/17 get and store cookies, extract url
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +104,7 @@ public class Login extends AppCompatActivity {
         protected ServerResponse doInBackground(Void... params) {
             try {
                 RequestBody requestBody = new FormEncodingBuilder()
-                        .add("user_id", userId)
+                        .add("id", userId)
                         .add("password", password)
                         .build();
                 Request request = new Request.Builder()
