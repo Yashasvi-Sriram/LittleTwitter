@@ -2,6 +2,7 @@ package org.littletwitter.littletwitter.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -12,14 +13,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
@@ -27,6 +25,12 @@ import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
 import java.io.IOException;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Login extends AppCompatActivity {
     private EditText userIdView;
@@ -56,7 +60,11 @@ public class Login extends AppCompatActivity {
         loginFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
 
-        client = new OkHttpClient();
+        // Network
+        PersistentCookieJar persistentCookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        client = new OkHttpClient.Builder()
+                .cookieJar(persistentCookieJar)
+                .build();
     }
 
     private void attemptLogin() {
@@ -103,7 +111,7 @@ public class Login extends AppCompatActivity {
         @Override
         protected ServerResponse doInBackground(Void... params) {
             try {
-                RequestBody requestBody = new FormEncodingBuilder()
+                RequestBody requestBody = new FormBody.Builder()
                         .add("id", userId)
                         .add("password", password)
                         .build();
@@ -113,15 +121,10 @@ public class Login extends AppCompatActivity {
                         .build();
 
                 Response response = client.newCall(request).execute();
-                if (!response.isSuccessful()) {
-                    return null;
-                }
-
                 String body = response.body().string();
-                Log.i("hesoyam", body);
 
                 return new StringServerResponse(body);
-            } catch (IOException | JSONException e) {
+            } catch (IOException | JSONException | NullPointerException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -130,6 +133,15 @@ public class Login extends AppCompatActivity {
         @Override
         protected void onPostExecute(final ServerResponse response) {
             showProgress(false);
+            if (response == null) {
+                Toast.makeText(Login.this, "Server error", Toast.LENGTH_SHORT).show();
+            } else {
+                if (response.getStatus()) {
+                    startActivity(new Intent(Login.this, Home.class));
+                } else {
+                    Toast.makeText(Login.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
         @Override

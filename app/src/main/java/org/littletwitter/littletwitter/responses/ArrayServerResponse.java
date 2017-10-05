@@ -14,7 +14,7 @@ public class ArrayServerResponse extends ServerResponse {
         JSONObject seedObject = new JSONObject(seed);
         status = seedObject.getBoolean("status");
         if (!status) {
-            errorMessage = seedObject.getString("status");
+            errorMessage = seedObject.getString("message");
         } else {
             data = seedObject.getJSONArray("data");
         }
