@@ -1,3 +1,10 @@
 <resources>
+    <!-- Activity labels -->
     <string name="app_name">Little Twitter</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_user_id">User Id</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="error_field_required">This field is required</string>
 </resources>
