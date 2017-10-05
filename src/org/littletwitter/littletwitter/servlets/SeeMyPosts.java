@@ -58,7 +58,7 @@ public class SeeMyPosts extends HttpServlet {
             String id = (String) request.getSession().getAttribute("id");
             try {
                 obj.put("status", true);
-                obj.put("data", DbHandler.seeMyPosts(id, offset, limit));
+                obj.put("data", DBHandler.seeMyPosts(id, offset, limit));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

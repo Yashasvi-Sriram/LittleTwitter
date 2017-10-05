@@ -57,7 +57,7 @@ public class UserFollow extends HttpServlet {
             String uid = (String) request.getSession().getAttribute("id");
             try {
                 obj.put("status", true);
-                obj.put("data", DbHandler.userFollow(uid));
+                obj.put("data", DBHandler.userFollow(uid));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

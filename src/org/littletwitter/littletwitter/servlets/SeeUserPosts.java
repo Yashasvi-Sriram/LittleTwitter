@@ -57,7 +57,7 @@ public class SeeUserPosts extends HttpServlet {
             String id = request.getParameter("uid");
             try {
                 obj.put("status", true);
-                obj.put("data", DbHandler.seeUserPosts(id, offset, limit));
+                obj.put("data", DBHandler.seeUserPosts(id, offset, limit));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

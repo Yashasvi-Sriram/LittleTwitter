@@ -50,7 +50,7 @@ public class NewComment extends HttpServlet {
             String id = (String) request.getSession().getAttribute("id");
             String comment = request.getParameter("content");
             String postid = request.getParameter("postid");
-            out.print(DbHandler.writecomment(id, postid, comment));
+            out.print(DBHandler.writeComment(id, postid, comment));
         }
     }
 

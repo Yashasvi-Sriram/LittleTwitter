@@ -53,7 +53,7 @@ public class Unfollow extends HttpServlet {
             String uid1 = (String) request.getSession().getAttribute("id");
             String uid2 = request.getParameter("uid");
             try {
-                out.print(DbHandler.unfollow(uid1, uid2));
+                out.print(DBHandler.unFollow(uid1, uid2));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

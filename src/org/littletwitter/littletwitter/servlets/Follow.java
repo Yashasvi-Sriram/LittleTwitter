@@ -51,7 +51,7 @@ public class Follow extends HttpServlet {
             request.getSession();
             String uid1 = (String) request.getSession().getAttribute("id");
             try {
-                out.print(DbHandler.follow(uid1, uid2));
+                out.print(DBHandler.follow(uid1, uid2));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

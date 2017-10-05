@@ -56,7 +56,7 @@ public class Logout extends HttpServlet {
             }
         } else {
             try {
-                out.print(DbHandler.deauth(request));
+                out.print(DBHandler.deAuthenticate(request));
                 System.out.println("Logged Out");
             } catch (JSONException e) {
                 // TODO Auto-generated catch block

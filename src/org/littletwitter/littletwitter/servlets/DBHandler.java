@@ -10,12 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class DbHandler {
-    // connection strings
-    private static String connString = "jdbc:postgresql://localhost:5080/postgres";
-    private static String userName = "pandu";
-    private static String passWord = "";
-
+public class DBHandler {
+    private static String URL = "jdbc:postgresql://localhost:5080/postgres";
+    private static String USERNAME = "pandu";
+    private static String PASSWORD = "";
 
     public static JSONObject authenticate(String id, String password, HttpServletRequest request) {
         JSONObject obj = new JSONObject();
@@ -29,7 +27,7 @@ public class DbHandler {
 
         try {
             // Create the connection
-            Connection conn = DriverManager.getConnection(connString, userName, passWord);
+            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             String query = "SELECT count(*) FROM password WHERE id=? AND password=?;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1, id);
@@ -53,10 +51,10 @@ public class DbHandler {
         return obj;
     }
 
-    public static JSONObject createpost(String id, String postText) {
+    public static JSONObject createPost(String id, String postText) {
         JSONObject obj = new JSONObject();
         try {
-            Connection conn = DriverManager.getConnection(connString, userName, passWord);
+            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             PreparedStatement pStmt = conn.prepareStatement("INSERT INTO post(uid,text,timestamp) VALUES(?,?,CURRENT_TIMESTAMP);");
             pStmt.setString(1, id);
             pStmt.setString(2, postText);
@@ -73,11 +71,10 @@ public class DbHandler {
         return obj;
     }
 
-
-    public static JSONObject writecomment(String id, String PostId, String comment) {
+    public static JSONObject writeComment(String id, String PostId, String comment) {
         JSONObject obj = new JSONObject();
         try {
-            Connection conn = DriverManager.getConnection(connString, userName, passWord);
+            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             PreparedStatement pStmt = conn.prepareStatement("INSERT INTO comment(postid,uid,timestamp,text) VALUES(?,?,CURRENT_TIMESTAMP,?);");
             pStmt.setInt(1, Integer.parseInt(PostId));
             pStmt.setString(2, id);
@@ -100,14 +97,14 @@ public class DbHandler {
         JSONArray jsonObj = new JSONArray();
         try {
             // Create the connection
-            Connection conn = DriverManager.getConnection(connString, userName, passWord);
+            Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             String query = "SELECT uid2 AS uid, name FROM follows, \"user\" WHERE \"user\".uid "
                     + "= uid2 AND uid1 = ?";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1, id);
             ResultSet result = preparedStmt.executeQuery();
 
-            jsonObj = ResultSetConverter(result);
+            jsonObj = resultSetConverter(result);
             preparedStmt.close();
             conn.close();
 
@@ -118,8 +115,7 @@ public class DbHandler {
         return jsonObj;
     }
 
-
-    public static JSONObject deauth(HttpServletRequest request) throws JSONException {
+    public static JSONObject deAuthenticate(HttpServletRequest request) throws JSONException {
         JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
             obj.put("status", false);
@@ -137,7 +133,7 @@ public class DbHandler {
         JSONArray json = new JSONArray();
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement postSt = conn.prepareStatement("SELECT postid,timestamp,uid,text FROM post WHERE post.uid = ? ORDER BY timestamp DESC OFFSET ? LIMIT ?");
         ) {
             postSt.setString(1, id);
@@ -145,7 +141,7 @@ public class DbHandler {
             postSt.setInt(3, limit);
             ResultSet rs = postSt.executeQuery();
             conn.close();
-            json = ResultSetConverter(rs);
+            json = resultSetConverter(rs);
             return json;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -161,7 +157,7 @@ public class DbHandler {
         JSONArray json = new JSONArray();
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement postSt = conn.prepareStatement("SELECT postid,timestamp,uid,text FROM post WHERE post.uid = ? ORDER BY timestamp DESC OFFSET ? LIMIT ?");
         ) {
             postSt.setString(1, id);
@@ -169,7 +165,7 @@ public class DbHandler {
             postSt.setInt(3, limit);
             ResultSet rs = postSt.executeQuery();
             conn.close();
-            json = ResultSetConverter(rs);
+            json = resultSetConverter(rs);
             return json;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -185,7 +181,7 @@ public class DbHandler {
         JSONArray json = new JSONArray();
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement postSt = conn.prepareStatement("SELECT postid,timestamp,uid,text FROM post WHERE post.uid IN (SELECT uid2 FROM follows WHERE uid1 = ? UNION SELECT uid FROM \"user\" WHERE uid=? ) ORDER BY timestamp ASC OFFSET ? LIMIT ?");
         ) {
             postSt.setString(1, id);
@@ -193,7 +189,7 @@ public class DbHandler {
             postSt.setInt(3, offset);
             postSt.setInt(4, limit);
             ResultSet rs = postSt.executeQuery();
-            json = ResultSetConverter(rs);
+            json = resultSetConverter(rs);
             return json;
         } catch (SQLException | JSONException e) {
             e.printStackTrace();
@@ -201,9 +197,7 @@ public class DbHandler {
         return json;
     }
 
-    private static JSONArray ResultSetConverter(ResultSet rs) throws SQLException, JSONException {
-
-        // TODO Auto-generated method stub
+    private static JSONArray resultSetConverter(ResultSet rs) throws SQLException, JSONException {
         JSONArray json = new JSONArray();
         ResultSetMetaData rsmd = rs.getMetaData();
         while (rs.next()) {
@@ -242,19 +236,15 @@ public class DbHandler {
                 } else {
                     obj.put(column_name, rs.getObject(column_name));
                 }
-
                 if (column_name.equals((String) "postid")) {
                     postid = rs.getInt(column_name);
-
                 }
-
             }
             json.put(obj);
             if (postid != -1) {
                 JSONArray comObj = getComments(postid);
                 obj.put("Comment", comObj);
             }
-
         }
         return json;
     }
@@ -263,13 +253,13 @@ public class DbHandler {
         JSONArray json = new JSONArray();
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement commSt = conn.prepareStatement("SELECT timestamp,comment.uid, name, text FROM comment,\"user\" AS us WHERE postid = ? AND us.uid=comment.uid ORDER BY timestamp ASC")
 
         ) {
             commSt.setInt(1, postid);
             ResultSet rs = commSt.executeQuery();
-            json = ResultSetConverter(rs);
+            json = resultSetConverter(rs);
             return json;
         } catch (SQLException | JSONException e) {
             // TODO Auto-generated catch block
@@ -283,7 +273,7 @@ public class DbHandler {
         JSONObject obj = new JSONObject();
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement commSt = conn.prepareStatement("INSERT INTO follows VALUES(?,?)");
 
         ) {
@@ -305,11 +295,11 @@ public class DbHandler {
         return obj;
     }
 
-    public static JSONObject unfollow(String uid1, String uid2) throws JSONException {
+    public static JSONObject unFollow(String uid1, String uid2) throws JSONException {
         JSONObject obj = new JSONObject();
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement check = conn.prepareStatement("SELECT * FROM follows WHERE uid1=? AND uid2=?");
 
         ) {
@@ -325,7 +315,7 @@ public class DbHandler {
                     obj.put("data", "unfollowed " + uid2);
                 } else {
                     obj.put("status", false);
-                    obj.put("message", "could not unfollow");
+                    obj.put("message", "could not unFollow");
 
                 }
             } else {
@@ -345,7 +335,7 @@ public class DbHandler {
             return jsonToSend;
         try (
                 Connection conn = DriverManager.getConnection(
-                        connString, userName, "");
+                        URL, USERNAME, "");
                 PreparedStatement commSt = conn.prepareStatement("SELECT name,uid,email FROM \"user\" WHERE name LIKE ? OR uid LIKE ? OR email LIKE ? LIMIT 10");
         ) {
 
@@ -355,7 +345,7 @@ public class DbHandler {
             commSt.setString(2, search);
             commSt.setString(3, search);
             ResultSet rset = commSt.executeQuery();
-            jsonToSend.put(ResultSetConverter(rset));
+            jsonToSend.put(resultSetConverter(rset));
             return jsonToSend;
         } catch (SQLException | JSONException e) {
             // TODO Auto-generated catch block
@@ -363,4 +353,5 @@ public class DbHandler {
         }
         return jsonToSend;
     }
+
 }

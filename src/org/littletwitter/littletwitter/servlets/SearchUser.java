@@ -50,7 +50,7 @@ public class SearchUser extends HttpServlet {
             String id = request.getParameter("uid");
             try {
                 obj.put("status", true);
-                obj.put("data", DbHandler.getSuggestion(id));
+                obj.put("data", DBHandler.getSuggestion(id));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

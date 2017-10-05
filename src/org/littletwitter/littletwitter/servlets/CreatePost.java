@@ -51,7 +51,7 @@ public class CreatePost extends HttpServlet {
 		{
 			String id = (String)request.getSession().getAttribute("id");
 			String post = request.getParameter("content");
-			out.print(DbHandler.createpost(id,post));
+			out.print(DBHandler.createPost(id,post));
 			out.close();
 		}
 	}
