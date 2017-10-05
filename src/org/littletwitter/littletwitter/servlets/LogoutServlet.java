@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@WebServlet("/Logout")
-public class Logout extends HttpServlet {
+@WebServlet("/LogoutServlet")
+public class LogoutServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,13 +26,12 @@ public class Logout extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         if (request.getSession(false) == null) {
-            JSONObject obj = new JSONObject();
             try {
-                obj.put("staus", false);
+                JSONObject obj = new JSONObject();
+                obj.put("status", false);
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         } else {
@@ -40,7 +39,6 @@ public class Logout extends HttpServlet {
                 out.print(DBHandler.deAuthenticate(request));
                 System.out.println("Logged Out");
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         }

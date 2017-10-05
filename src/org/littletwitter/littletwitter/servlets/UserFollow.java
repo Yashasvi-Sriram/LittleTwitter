@@ -27,7 +27,7 @@ public class UserFollow extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         if (request.getSession(false) == null) {
             try {
-                obj.put("staus", false);
+                obj.put("status", false);
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {

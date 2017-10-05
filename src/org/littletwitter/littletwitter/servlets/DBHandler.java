@@ -107,13 +107,12 @@ public class DBHandler {
         if (request.getSession(false) == null) {
             obj.put("status", false);
             obj.put("message", "Invalid Session");
-            return obj;
         } else {
             request.getSession(false).invalidate();
             obj.put("status", true);
             obj.put("data", "Successfully logged out");
-            return obj;
         }
+        return obj;
     }
 
     public static JSONArray seeMyPosts(String id, int offset, int limit) {
@@ -156,7 +155,7 @@ public class DBHandler {
 
     public static JSONArray getComments(int postId) {
         JSONArray json = new JSONArray();
-        String query = "SELECT timestamp,comment.uid, \"user\".name, text FROM comment,\"user\" AS us WHERE postid = ? AND us.uid=comment.uid ORDER BY timestamp ASC";
+        String query = "SELECT timestamp,comment.uid, us.name, text FROM comment,\"user\" AS us WHERE postid = ? AND us.uid=comment.uid ORDER BY timestamp ASC";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement commSt = conn.prepareStatement(query)) {
             commSt.setInt(1, postId);

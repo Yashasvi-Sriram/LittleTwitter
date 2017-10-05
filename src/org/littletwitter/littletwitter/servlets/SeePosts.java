@@ -24,11 +24,10 @@ public class SeePosts extends HttpServlet {
         JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
             try {
-                obj.put("staus", false);
+                obj.put("status", false);
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         } else {
@@ -44,16 +43,13 @@ public class SeePosts extends HttpServlet {
                 obj.put("status", true);
                 obj.put("data", DBHandler.seePosts(id, offset, limit));
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             out.print(obj);
         }
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         doGet(request, response);
     }
 

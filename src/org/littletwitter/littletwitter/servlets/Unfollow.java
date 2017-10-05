@@ -26,7 +26,7 @@ public class Unfollow extends HttpServlet {
         if (request.getSession(false) == null) {
             JSONObject obj = new JSONObject();
             try {
-                obj.put("staus", false);
+                obj.put("status", false);
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {

@@ -24,7 +24,7 @@ public class SeeMyPosts extends HttpServlet {
         JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
             try {
-                obj.put("staus", false);
+                obj.put("status", false);
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {
@@ -45,7 +45,6 @@ public class SeeMyPosts extends HttpServlet {
                 obj.put("status", true);
                 obj.put("data", DBHandler.seeMyPosts(id, offset, limit));
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             out.print(obj);
