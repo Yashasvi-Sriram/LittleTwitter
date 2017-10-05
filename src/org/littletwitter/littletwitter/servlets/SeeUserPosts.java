@@ -13,26 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Servlet implementation class SeeUserPosts
- */
 @WebServlet("/SeeUserPosts")
 public class SeeUserPosts extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public SeeUserPosts() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
+
         JSONObject obj = new JSONObject();
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
@@ -43,7 +29,7 @@ public class SeeUserPosts extends HttpServlet {
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
         } else {
@@ -59,7 +45,7 @@ public class SeeUserPosts extends HttpServlet {
                 obj.put("status", true);
                 obj.put("data", DBHandler.seeUserPosts(id, offset, limit));
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
             out.println(obj);
@@ -67,11 +53,8 @@ public class SeeUserPosts extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
+
         doGet(request, response);
     }
 

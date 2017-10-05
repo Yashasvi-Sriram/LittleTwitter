@@ -13,34 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Servlet implementation class Logout
- */
 @WebServlet("/Logout")
 public class Logout extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public Logout() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doPost(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -51,7 +32,7 @@ public class Logout extends HttpServlet {
                 obj.put("message", "Invalid session");
                 out.print(obj);
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
         } else {
@@ -59,7 +40,7 @@ public class Logout extends HttpServlet {
                 out.print(DBHandler.deAuthenticate(request));
                 System.out.println("Logged Out");
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
         }
