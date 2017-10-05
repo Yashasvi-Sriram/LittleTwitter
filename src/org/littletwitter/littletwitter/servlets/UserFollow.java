@@ -21,15 +21,14 @@ public class UserFollow extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JSONObject obj = new JSONObject();
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
-                out.print(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -41,9 +40,10 @@ public class UserFollow extends HttpServlet {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            out.print(obj);
             out.close();
         }
+        out.print(obj);
+        out.close();
     }
 
 }

@@ -20,21 +20,21 @@ public class CreatePost extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
+            JSONObject obj = new JSONObject();
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
-                out.print(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            out.print(obj);
         } else {
             String id = (String) request.getSession().getAttribute("id");
             String post = request.getParameter("content");
             out.print(DBHandler.createPost(id, post));
-            out.close();
         }
+        out.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

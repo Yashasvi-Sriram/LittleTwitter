@@ -18,18 +18,16 @@ public class SeeUserPosts extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        JSONObject obj = new JSONObject();
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+
+        JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
-                out.print(obj);
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         } else {
@@ -45,16 +43,14 @@ public class SeeUserPosts extends HttpServlet {
                 obj.put("status", true);
                 obj.put("data", DBHandler.seeUserPosts(id, offset, limit));
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
-            out.println(obj);
-
         }
+        out.print(obj);
+        out.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         doGet(request, response);
     }
 

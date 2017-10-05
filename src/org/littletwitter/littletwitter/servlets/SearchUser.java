@@ -26,9 +26,7 @@ public class SearchUser extends HttpServlet {
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
-                out.print(obj);
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         } else {
@@ -40,12 +38,12 @@ public class SearchUser extends HttpServlet {
 
                 e.printStackTrace();
             }
-            out.print(obj);
         }
+        out.print(obj);
+        out.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         doGet(request, response);
     }
 

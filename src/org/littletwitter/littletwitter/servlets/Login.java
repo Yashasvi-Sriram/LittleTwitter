@@ -26,6 +26,7 @@ public class Login extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         out.print(DBHandler.authenticate(id, password, request));
+        out.close();
     }
 
 }

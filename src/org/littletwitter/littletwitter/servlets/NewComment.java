@@ -26,17 +26,17 @@ public class NewComment extends HttpServlet {
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
-                out.print(obj);
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
+            out.print(obj);
         } else {
             String id = (String) request.getSession().getAttribute("id");
             String comment = request.getParameter("content");
             String postid = request.getParameter("postid");
             out.print(DBHandler.writeComment(id, postid, comment));
         }
+        out.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

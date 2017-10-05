@@ -25,24 +25,23 @@ public class LogoutServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        if (request.getSession(false) == null) {
-            try {
-                JSONObject obj = new JSONObject();
+        JSONObject obj = new JSONObject();
+        try {
+            if (request.getSession(false) == null) {
                 obj.put("status", false);
-                obj.put("message", "Invalid session");
-                out.print(obj);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                obj.put("message", "Invalid Session");
+            } else {
+                request.getSession(false).invalidate();
+                obj.put("status", true);
+                obj.put("data", "Successfully logged out");
             }
-        } else {
-            try {
-                out.print(DBHandler.deAuthenticate(request));
-                System.out.println("Logged Out");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        out.print(obj);
         out.close();
+
+        System.out.println("Logged Out");
     }
 
 }

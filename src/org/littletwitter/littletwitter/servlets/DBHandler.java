@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class DBHandler {
     private static String URL = "jdbc:postgresql://localhost:5080/postgres";
     private static String USERNAME = "pandu";
@@ -102,19 +101,6 @@ public class DBHandler {
         return json;
     }
 
-    public static JSONObject deAuthenticate(HttpServletRequest request) throws JSONException {
-        JSONObject obj = new JSONObject();
-        if (request.getSession(false) == null) {
-            obj.put("status", false);
-            obj.put("message", "Invalid Session");
-        } else {
-            request.getSession(false).invalidate();
-            obj.put("status", true);
-            obj.put("data", "Successfully logged out");
-        }
-        return obj;
-    }
-
     public static JSONArray seeMyPosts(String id, int offset, int limit) {
         return seeUserPosts(id, offset, limit);
     }
@@ -167,28 +153,32 @@ public class DBHandler {
         return json;
     }
 
-    public static JSONObject follow(String uid1, String uid2) throws JSONException {
+    public static JSONObject follow(String uid1, String uid2) {
         JSONObject obj = new JSONObject();
         String query = "INSERT INTO follows VALUES(?,?)";
-        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-             PreparedStatement commSt = conn.prepareStatement(query)) {
-            commSt.setString(1, uid1);
-            commSt.setString(2, uid2);
-            if (commSt.executeUpdate() > 0) {
-                obj.put("status", true);
-                obj.put("data", "user followed " + uid2);
-            } else {
+        try {
+            try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+                 PreparedStatement commSt = conn.prepareStatement(query)) {
+                commSt.setString(1, uid1);
+                commSt.setString(2, uid2);
+                if (commSt.executeUpdate() > 0) {
+                    obj.put("status", true);
+                    obj.put("data", "user followed " + uid2);
+                } else {
+                    obj.put("status", false);
+                    obj.put("message", "could not follow");
+                }
+            } catch (SQLException e) {
                 obj.put("status", false);
-                obj.put("message", "could not follow");
+                obj.put("message", "Already followed");
             }
-        } catch (SQLException e) {
-            obj.put("status", false);
-            obj.put("message", "Already followed");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         return obj;
     }
 
-    public static JSONObject unFollow(String uid1, String uid2) throws JSONException {
+    public static JSONObject unFollow(String uid1, String uid2) {
         JSONObject obj = new JSONObject();
         String query = "SELECT * FROM follows WHERE uid1=? AND uid2=?";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -203,7 +193,7 @@ public class DBHandler {
                 commSt.setString(2, uid2);
                 if (commSt.executeUpdate() > 0) {
                     obj.put("status", true);
-                    obj.put("data", "unfollowed " + uid2);
+                    obj.put("data", "unFollowed " + uid2);
                 } else {
                     obj.put("status", false);
                     obj.put("message", "could not unFollow");
@@ -212,7 +202,7 @@ public class DBHandler {
                 obj.put("status", false);
                 obj.put("message", "user not followed");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | JSONException e) {
             e.printStackTrace();
         }
         return obj;

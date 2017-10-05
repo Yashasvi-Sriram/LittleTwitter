@@ -26,9 +26,7 @@ public class SeeMyPosts extends HttpServlet {
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
-                out.print(obj);
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         } else {
@@ -47,10 +45,9 @@ public class SeeMyPosts extends HttpServlet {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            out.print(obj);
         }
-
-
+        out.print(obj);
+        out.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
