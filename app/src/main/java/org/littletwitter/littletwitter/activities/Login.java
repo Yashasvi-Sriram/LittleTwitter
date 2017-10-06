@@ -19,6 +19,7 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
+import org.littletwitter.littletwitter.configuration.URLSource;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
@@ -112,7 +113,7 @@ public class Login extends AppCompatActivity {
                         .add("password", password)
                         .build();
                 Request request = new Request.Builder()
-                        .url("http://192.168.0.5:8080/Login")
+                        .url(URLSource.login())
                         .post(requestBody)
                         .build();
 

@@ -30,6 +30,7 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
 import org.littletwitter.littletwitter.beans.Post;
+import org.littletwitter.littletwitter.configuration.URLSource;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
 import org.littletwitter.littletwitter.customadapters.PostAdapter;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
@@ -223,7 +224,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         protected ServerResponse doInBackground(Void... params) {
             try {
                 Request request = new Request.Builder()
-                        .url("http://192.168.0.5:8080/LogoutServlet")
+                        .url(URLSource.logout())
                         .build();
 
                 Response response = client.newCall(request).execute();
@@ -259,7 +260,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         @Override
         protected ServerResponse doInBackground(Void... params) {
             try {
-                HttpUrl.Builder urlBuilder = HttpUrl.parse("http://192.168.0.5:8080/SeePosts").newBuilder()
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(URLSource.seePosts()).newBuilder()
                         .addQueryParameter("offset", String.valueOf(offset))
                         .addQueryParameter("limit", String.valueOf(limit));
 
