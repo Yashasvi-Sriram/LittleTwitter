@@ -1,11 +1,13 @@
-INSERT INTO post VALUES (nextval('postid'), '00128', CURRENT_TIMESTAMP, 'Hi! this is Zhang!!');
+INSERT INTO post VALUES (nextval('postid'), '00128', CURRENT_TIMESTAMP,
+                         'Hi! this is Zhang!! Hi! this is Zhang!! Hi! this is Zhang!! Hi! this is Zhang!! Hi! this is Zhang!!');
 INSERT INTO post VALUES (nextval('postid'), '00128', CURRENT_TIMESTAMP, 'I live in Mumbai.');
 INSERT INTO post VALUES (nextval('postid'), '00128', CURRENT_TIMESTAMP, 'I like to sleep and eat');
 INSERT INTO post VALUES (nextval('postid'), '00128', CURRENT_TIMESTAMP, 'I dont study much');
 INSERT INTO post VALUES (nextval('postid'), '00128', CURRENT_TIMESTAMP, 'I play a lot of games');
 
 
-INSERT INTO post VALUES (nextval('postid'), '12345', CURRENT_TIMESTAMP, 'Hi! This is Shankar!!');
+INSERT INTO post VALUES (nextval('postid'), '12345', CURRENT_TIMESTAMP,
+                         'Hi! This is Shankar!! Hi! This is Shankar!! Hi! This is Shankar!! Hi! This is Shankar!! Hi! This is Shankar!! Hi! This is Shankar!! ');
 INSERT INTO post VALUES (nextval('postid'), '12345', CURRENT_TIMESTAMP, 'I live in Delhi');
 INSERT INTO post VALUES (nextval('postid'), '12345', CURRENT_TIMESTAMP, 'I like to play games');
 INSERT INTO post VALUES (nextval('postid'), '12345', CURRENT_TIMESTAMP, 'I watch a lot of movies');
@@ -39,9 +41,11 @@ INSERT INTO post VALUES (nextval('postid'), '44553', CURRENT_TIMESTAMP, 'Watch o
 INSERT INTO post VALUES (nextval('postid'), '44553', CURRENT_TIMESTAMP, 'I am going to America');
 
 
-
-
-
+INSERT INTO comment (commentid, postid, uid, timestamp, text)
+VALUES (nextval('commentid'), '6', '12345', CURRENT_TIMESTAMP, 'This is a comment!');
+VALUES (nextval('commentid'), '6', '23121', CURRENT_TIMESTAMP, 'That is so cool!');
+VALUES (nextval('commentid'), '6', '44553', CURRENT_TIMESTAMP, 'Congratulations!');
+VALUES (nextval('commentid'), '6', '19991', CURRENT_TIMESTAMP, 'wow!!');
 
 
 

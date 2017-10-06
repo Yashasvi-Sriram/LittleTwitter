@@ -34,14 +34,13 @@ public class LogoutServlet extends HttpServlet {
                 request.getSession(false).invalidate();
                 obj.put("status", true);
                 obj.put("data", "Successfully logged out");
+                System.out.println("Logged Out");
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         out.print(obj);
         out.close();
-
-        System.out.println("Logged Out");
     }
 
 }
