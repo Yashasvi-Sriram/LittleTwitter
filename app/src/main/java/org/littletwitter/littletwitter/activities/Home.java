@@ -54,8 +54,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private TextView userId;
     private RecyclerView postListView;
     private SwipeRefreshLayout postListSwipeRefreshLayout;
+    private PostAdapter postAdapter;
+    private boolean fetchingPostBatch = false;
 
-    private int offset = 0;
+    private int offset;
     private final int limit = 10;
 
     @Override
@@ -88,6 +90,24 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         View contentHome = findViewById(R.id.content_home);
         postListView = contentHome.findViewById(R.id.post_list);
+        final LinearLayoutManager postListViewLayoutManager = new LinearLayoutManager(this);
+        postListView.setLayoutManager(postListViewLayoutManager);
+        postListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    int visibleItemCount = postListViewLayoutManager.getChildCount();
+                    int totalItemCount = postListViewLayoutManager.getItemCount();
+                    int pastVisibleItems = postListViewLayoutManager.findFirstVisibleItemPosition();
+                    if (!fetchingPostBatch && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                        fetchingPostBatch = true;
+                        // dirty line
+                        Snackbar.make(progressView, "Getting more posts", Snackbar.LENGTH_SHORT).show();
+                        fetchNextBatchOfPosts();
+                    }
+                }
+            }
+        });
 
         postListSwipeRefreshLayout = contentHome.findViewById(R.id.post_list_swipe_refresh_layout);
         postListSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -100,7 +120,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
 
         // Network
         UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
@@ -157,13 +176,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     private void startFromFirstBatch() {
         offset = 0;
-        new PostFetchTask(offset, limit).execute();
-        offset += limit;
+        new PostFetchTask().execute();
     }
 
     private void fetchNextBatchOfPosts() {
-        new PostFetchTask(offset, limit).execute();
-        offset += limit;
+        new PostFetchTask().execute();
     }
 
     private void showProgress(final boolean show) {
@@ -230,14 +247,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private class PostFetchTask extends AsyncTask<Void, Void, ServerResponse> {
-        private int offset;
-        private int limit;
-
-        public PostFetchTask(int offset, int limit) {
-            this.offset = offset;
-            this.limit = limit;
-        }
-
         @Override
         protected ServerResponse doInBackground(Void... params) {
             try {
@@ -245,15 +254,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         .addQueryParameter("offset", String.valueOf(offset))
                         .addQueryParameter("limit", String.valueOf(limit));
 
-                Log.i("hesoyam", urlBuilder.build().toString());
-
                 Request request = new Request.Builder()
                         .url(urlBuilder.build().toString())
                         .build();
 
                 Response response = client.newCall(request).execute();
                 String body = response.body().string();
-                Log.i("hesoyam", body);
 
                 return new ArrayServerResponse(body);
             } catch (IOException | JSONException | NullPointerException e) {
@@ -270,22 +276,41 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             } else {
                 if (!response.getStatus()) {
                     Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Home.this, Login.class));
                 } else {
                     try {
                         ArrayServerResponse a = (ArrayServerResponse) response;
-                        List<Post> posts = new ArrayList<>();
-                        for (int i = 0; i < a.getData().length(); i++) {
-                            posts.add(new Post(a.getData().getJSONObject(i)));
+                        // reset post list view
+                        if (offset == 0) {
+                            List<Post> posts = new ArrayList<>();
+                            for (int i = 0; i < a.getData().length(); i++) {
+                                posts.add(new Post(a.getData().getJSONObject(i)));
+                            }
+                            postAdapter = new PostAdapter(posts);
+                            postListView.setAdapter(postAdapter);
+                        } else {
+                            // append new posts at the bottom
+                            for (int i = 0; i < a.getData().length(); i++) {
+                                postAdapter.add(new Post(a.getData().getJSONObject(i)));
+                            }
+                            // last batch
+                            if (a.getData().length() < limit) {
+                                offset -= limit;
+                                offset += a.getData().length();
+                            }
+                            if (a.getData().length() == 0) {
+                                // dirty line
+                                Snackbar.make(progressView, "End of posts!", Snackbar.LENGTH_SHORT).show();
+                            }
                         }
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(Home.this);
-                        postListView.setLayoutManager(layoutManager);
-                        postListView.setAdapter(new PostAdapter(posts));
+                        offset += limit;
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(Home.this, "Client doesn't seem to know server well", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
+            fetchingPostBatch = false;
         }
     }
 
