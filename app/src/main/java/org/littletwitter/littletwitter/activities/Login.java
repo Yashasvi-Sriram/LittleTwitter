@@ -39,8 +39,6 @@ public class Login extends AppCompatActivity {
     private View loginFormView;
     private OkHttpClient client;
 
-    // TODO: 5/10/17 extract url
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +133,9 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "Server error", Toast.LENGTH_SHORT).show();
             } else {
                 if (response.getStatus()) {
-                    startActivity(new Intent(Login.this, Home.class));
+                    Intent i = new Intent(Login.this, Home.class);
+                    i.putExtra("id", userId);
+                    startActivity(i);
                 } else {
                     Toast.makeText(Login.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }

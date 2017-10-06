@@ -47,6 +47,8 @@ import okhttp3.Response;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private String id; // user id
+
     private DrawerLayout drawerLayout;
     private OkHttpClient client;
     private View progressView;
@@ -63,7 +65,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Extras
+        id = getIntent().getStringExtra("id");
+        // no id
+        if (id == null) {
+            finish();
+        }
         setContentView(R.layout.activity_home);
+
         // UI
         Toolbar toolbar = findViewById(R.id.app_bar_home).findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -280,18 +289,21 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 } else {
                     try {
                         ArrayServerResponse a = (ArrayServerResponse) response;
+                        List<Post> posts = new ArrayList<>();
+                        for (int i = 0; i < a.getData().length(); i++) {
+                            Post post = new Post(a.getData().getJSONObject(i));
+                            if (!post.getUid().equals(id)) {
+                                posts.add(post);
+                            }
+                        }
                         // reset post list view
                         if (offset == 0) {
-                            List<Post> posts = new ArrayList<>();
-                            for (int i = 0; i < a.getData().length(); i++) {
-                                posts.add(new Post(a.getData().getJSONObject(i)));
-                            }
                             postAdapter = new PostAdapter(posts);
                             postListView.setAdapter(postAdapter);
                         } else {
                             // append new posts at the bottom
-                            for (int i = 0; i < a.getData().length(); i++) {
-                                postAdapter.add(new Post(a.getData().getJSONObject(i)));
+                            for (Post newPost : posts) {
+                                postAdapter.add(newPost);
                             }
                             // last batch
                             if (a.getData().length() < limit) {
