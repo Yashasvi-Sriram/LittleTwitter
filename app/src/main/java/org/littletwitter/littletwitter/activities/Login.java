@@ -39,7 +39,7 @@ public class Login extends AppCompatActivity {
     private View loginFormView;
     private OkHttpClient client;
 
-    // TODO: 5/10/17 extract url, use this async-task template
+    // TODO: 5/10/17 extract url
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -3,24 +3,37 @@
     android:id="@+id/post_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    >
 
-    <TextView
-        android:id="@+id/user_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/timestamp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/user_id" />
-
-    <TextView
-        android:id="@+id/text"
-        style="@style/Base.TextAppearance.AppCompat.Large"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/timestamp" />
+        android:layout_margin="2dp">
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_id" />
+
+        <TextView
+            android:id="@+id/text"
+            android:background="@drawable/post_bg"
+            style="@style/Base.TextAppearance.AppCompat.Large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timestamp"
+            android:padding="@dimen/activity_horizontal_margin" />
+    </RelativeLayout>
 
 </RelativeLayout>
