@@ -10,7 +10,7 @@
     <string name="title_activity_home">Home</string>
 
     <!-- Strings related to home -->
-    <string name="explore_people">Explore People</string>
+    <string name="my_posts">My Posts</string>
 
     <!-- misc -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

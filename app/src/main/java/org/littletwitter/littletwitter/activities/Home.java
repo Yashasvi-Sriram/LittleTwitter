@@ -166,7 +166,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.view_posts:
+            case R.id.my_posts:
                 break;
             case R.id.search:
                 break;
