@@ -302,7 +302,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         }
                         // reset post list view
                         if (offset == 0) {
-                            postAdapter = new PostAdapter(posts);
+                            postAdapter = new PostAdapter(posts, Home.this);
                             postListView.setAdapter(postAdapter);
                         } else {
                             // append new posts at the bottom

@@ -24,12 +24,17 @@
             android:name=".activities.Home"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.AddPost"
-            android:label="@string/add_post"/>
-        <activity android:name=".activities.Search"
-            android:label="@string/search"/>
-        <activity android:name=".activities.MyPosts"
-            android:label="@string/my_posts"/>
+        <activity
+            android:name=".activities.AddPost"
+            android:label="@string/add_post" />
+        <activity
+            android:name=".activities.Search"
+            android:label="@string/search" />
+        <activity
+            android:name=".activities.MyPosts"
+            android:label="@string/my_posts" />
+        <activity android:name=".activities.AddComment"
+            android:label="@string/add_comment"/>
     </application>
 
 </manifest>

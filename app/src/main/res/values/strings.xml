@@ -22,4 +22,5 @@
     <string name="add">add</string>
     <string name="show_all">show all</string>
     <string name="add_post">Add Post</string>
+    <string name="add_comment">Add Comment</string>
 </resources>
