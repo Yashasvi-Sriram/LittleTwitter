@@ -1,7 +1,6 @@
 package org.littletwitter.littletwitter.customadapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,12 @@ import org.littletwitter.littletwitter.beans.Comment;
 
 import java.util.List;
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
+public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
 
     private List<Comment> comments;
     private boolean showAll = false;
 
-    public CommentAdapter(List<Comment> comments) {
+    public CommentListAdapter(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -42,7 +41,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public CommentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CommentListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View v = layoutInflater.inflate(R.layout.comment_layout, parent, false);
         return new ViewHolder(v);

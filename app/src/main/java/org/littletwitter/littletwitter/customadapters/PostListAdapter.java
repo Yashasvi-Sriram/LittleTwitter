@@ -13,18 +13,16 @@ import android.widget.TextView;
 
 import org.littletwitter.littletwitter.R;
 import org.littletwitter.littletwitter.activities.AddComment;
-import org.littletwitter.littletwitter.activities.Home;
-import org.littletwitter.littletwitter.beans.Comment;
 import org.littletwitter.littletwitter.beans.Post;
 
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHolder> {
 
     private List<Post> posts;
     private Context context;
 
-    public PostAdapter(List<Post> posts, Context context) {
+    public PostListAdapter(List<Post> posts, Context context) {
         this.posts = posts;
         this.context = context;
     }
@@ -45,7 +43,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     @Override
-    public PostAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PostListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View v = layoutInflater.inflate(R.layout.post_layout, parent, false);
         return new ViewHolder(v);
@@ -58,13 +56,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.text.setText(post.getText());
         holder.timestamp.setText(post.getTimestamp());
 
-        final CommentAdapter commentAdapter = new CommentAdapter(post.getComments());
-        holder.commentsListView.setAdapter(commentAdapter);
+        final CommentListAdapter commentListAdapter = new CommentListAdapter(post.getComments());
+        holder.commentsListView.setAdapter(commentListAdapter);
 
         holder.showAllComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                commentAdapter.showAll();
+                commentListAdapter.showAll();
                 holder.showAllComments.setVisibility(View.GONE);
             }
         });

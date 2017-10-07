@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +31,7 @@ import org.littletwitter.littletwitter.R;
 import org.littletwitter.littletwitter.beans.Post;
 import org.littletwitter.littletwitter.configuration.URLSource;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
-import org.littletwitter.littletwitter.customadapters.PostAdapter;
+import org.littletwitter.littletwitter.customadapters.PostListAdapter;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
@@ -58,7 +56,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private TextView userId;
     private RecyclerView postListView;
     private SwipeRefreshLayout postListSwipeRefreshLayout;
-    private PostAdapter postAdapter;
+    private PostListAdapter postListAdapter;
     private boolean fetchingPostBatch = false;
 
     private int offset;
@@ -302,12 +300,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         }
                         // reset post list view
                         if (offset == 0) {
-                            postAdapter = new PostAdapter(posts, Home.this);
-                            postListView.setAdapter(postAdapter);
+                            postListAdapter = new PostListAdapter(posts, Home.this);
+                            postListView.setAdapter(postListAdapter);
                         } else {
                             // append new posts at the bottom
                             for (Post newPost : posts) {
-                                postAdapter.add(newPost);
+                                postListAdapter.add(newPost);
                             }
                             // last batch
                             if (a.getData().length() < limit) {
