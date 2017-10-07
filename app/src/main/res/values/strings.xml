@@ -19,4 +19,7 @@
     <string name="profile_picture">profile_picture</string>
     <string name="sign_out">Sign Out</string>
     <string name="search">Search</string>
+    <string name="add">add</string>
+    <string name="show_all">show all</string>
+    <string name="add_post">Add Post</string>
 </resources>

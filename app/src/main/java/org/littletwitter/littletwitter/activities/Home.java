@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +83,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Implement add post", Snackbar.LENGTH_SHORT).show();
+                startActivity(new Intent(Home.this, AddPost.class));
             }
         });
 
@@ -167,8 +168,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
         switch (id) {
             case R.id.my_posts:
+                startActivity(new Intent(Home.this, MyPosts.class));
                 break;
             case R.id.search:
+                startActivity(new Intent(Home.this, Search.class));
                 break;
             case R.id.log_out:
                 logout();
