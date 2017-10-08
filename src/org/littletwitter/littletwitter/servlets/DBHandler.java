@@ -77,6 +77,9 @@ public class DBHandler {
             if (pStmt.executeUpdate() > 0) {
                 obj.put("status", true);
                 obj.put("data", "Created comment successfully");
+            } else {
+                obj.put("status", false);
+                obj.put("message", "Unable to create");
             }
         } catch (Exception e) {
             e.printStackTrace();

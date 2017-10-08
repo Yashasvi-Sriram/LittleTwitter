@@ -29,7 +29,7 @@ public class LogoutServlet extends HttpServlet {
         try {
             if (request.getSession(false) == null) {
                 obj.put("status", false);
-                obj.put("message", "Invalid Session");
+                obj.put("message", "Invalid session");
             } else {
                 request.getSession(false).invalidate();
                 obj.put("status", true);
