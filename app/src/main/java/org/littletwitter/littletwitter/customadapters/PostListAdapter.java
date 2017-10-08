@@ -178,7 +178,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHo
             } else {
                 if (!response.getStatus()) {
                     Toast.makeText(context, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                    context.startActivity(new Intent(context, Login.class));
+                    if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        context.startActivity(new Intent(context, Login.class));
+                    }
                 } else {
                     StringServerResponse ssr = (StringServerResponse) response;
                     Toast.makeText(context, ssr.getData(), Toast.LENGTH_SHORT).show();

@@ -242,8 +242,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 if (!response.getStatus()) {
                     Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
-                startActivity(new Intent(Home.this, Login.class));
             }
+            startActivity(new Intent(Home.this, Login.class));
         }
 
         @Override
@@ -282,7 +282,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             } else {
                 if (!response.getStatus()) {
                     Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Home.this, Login.class));
+                    if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        startActivity(new Intent(Home.this, Login.class));
+                    }
                 } else {
                     try {
                         ArrayServerResponse a = (ArrayServerResponse) response;
