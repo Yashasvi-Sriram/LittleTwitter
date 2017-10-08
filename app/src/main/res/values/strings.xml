@@ -27,4 +27,7 @@
 
     <string name="new_post">Write Post here</string>
     <string name="add_post_button">Add Post</string>
+
+    <string name="search_hint">Search Here...</string>
+    <string name="image">image</string>
 </resources>
