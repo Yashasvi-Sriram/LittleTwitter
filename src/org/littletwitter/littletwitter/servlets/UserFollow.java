@@ -33,7 +33,7 @@ public class UserFollow extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            String uid = (String) request.getSession().getAttribute("id");
+            String uid = (String) request.getSession().getAttribute("userId");
             try {
                 obj.put("status", true);
                 obj.put("data", DBHandler.userFollow(uid));

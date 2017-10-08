@@ -40,12 +40,35 @@ INSERT INTO post VALUES (nextval('postid'), '44553', CURRENT_TIMESTAMP, 'One day
 INSERT INTO post VALUES (nextval('postid'), '44553', CURRENT_TIMESTAMP, 'Watch out your weakness');
 INSERT INTO post VALUES (nextval('postid'), '44553', CURRENT_TIMESTAMP, 'I am going to America');
 
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '5', '12345', CURRENT_TIMESTAMP, 'This is a comment!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '5', '23121', CURRENT_TIMESTAMP, 'That is so cool!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '5', '44553', CURRENT_TIMESTAMP, 'Congratulations!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '5', '19991', CURRENT_TIMESTAMP, 'wow!!');
 
-INSERT INTO comment (commentid, postid, uid, timestamp, text)
-VALUES (nextval('commentid'), '6', '12345', CURRENT_TIMESTAMP, 'This is a comment!');
-VALUES (nextval('commentid'), '6', '23121', CURRENT_TIMESTAMP, 'That is so cool!');
-VALUES (nextval('commentid'), '6', '44553', CURRENT_TIMESTAMP, 'Congratulations!');
-VALUES (nextval('commentid'), '6', '19991', CURRENT_TIMESTAMP, 'wow!!');
+
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '1', '12345', CURRENT_TIMESTAMP, 'This is a comment!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '1', '23121', CURRENT_TIMESTAMP, 'That is so cool!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '1', '19991', CURRENT_TIMESTAMP, 'wow!!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '1', '19991', CURRENT_TIMESTAMP, 'super!!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '1', '19991', CURRENT_TIMESTAMP, 'I am so exicted!!');
+
+
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '2', '12345', CURRENT_TIMESTAMP, 'This is a comment!');
+INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
+VALUES (nextval('commentid'), '2', '23121', CURRENT_TIMESTAMP, 'That is so cool!');
+
+SELECT *
+FROM comment;
 
 
 

@@ -20,7 +20,7 @@ public class Login extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id");
+        String id = request.getParameter("userId");
         String password = request.getParameter("password");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

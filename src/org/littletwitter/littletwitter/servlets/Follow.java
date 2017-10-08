@@ -33,7 +33,7 @@ public class Follow extends HttpServlet {
             out.print(obj);
         } else {
             request.getSession();
-            String uid1 = (String) request.getSession().getAttribute("id");
+            String uid1 = (String) request.getSession().getAttribute("userId");
             out.print(DBHandler.follow(uid1, uid2));
         }
         out.close();

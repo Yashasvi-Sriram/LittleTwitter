@@ -30,7 +30,7 @@ public class CreatePost extends HttpServlet {
             }
             out.print(obj);
         } else {
-            String id = (String) request.getSession().getAttribute("id");
+            String id = (String) request.getSession().getAttribute("userId");
             String post = request.getParameter("content");
             out.print(DBHandler.createPost(id, post));
         }

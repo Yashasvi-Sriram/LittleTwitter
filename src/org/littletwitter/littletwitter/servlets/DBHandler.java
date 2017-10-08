@@ -22,20 +22,20 @@ public class DBHandler {
         }
     }
 
-    public static JSONObject authenticate(String id, String password, HttpServletRequest request) {
+    public static JSONObject authenticate(String userId, String password, HttpServletRequest request) {
         JSONObject obj = new JSONObject();
         String query = "SELECT count(*) FROM password WHERE id=? AND password=?;";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
-            preparedStmt.setString(1, id);
+            preparedStmt.setString(1, userId);
             preparedStmt.setString(2, password);
             ResultSet result = preparedStmt.executeQuery();
             result.next();
             boolean ans = (result.getInt(1) > 0);
             if (ans) {
-                request.getSession(true).setAttribute("id", id);
+                request.getSession(true).setAttribute("userId", userId);
                 obj.put("status", true);
-                obj.put("data", id);
+                obj.put("data", userId);
             } else {
                 obj.put("status", false);
                 obj.put("message", "Authentication Failed");
@@ -66,20 +66,17 @@ public class DBHandler {
         return obj;
     }
 
-    public static JSONObject writeComment(String id, String PostId, String comment) {
+    public static JSONObject writeComment(String id, String postId, String text) {
         JSONObject obj = new JSONObject();
         String query = "INSERT INTO comment(postid,uid,timestamp,text) VALUES(?,?,CURRENT_TIMESTAMP,?);";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement pStmt = conn.prepareStatement(query)) {
-            pStmt.setInt(1, Integer.parseInt(PostId));
+            pStmt.setInt(1, Integer.parseInt(postId));
             pStmt.setString(2, id);
-            pStmt.setString(3, comment);
+            pStmt.setString(3, text);
             if (pStmt.executeUpdate() > 0) {
                 obj.put("status", true);
-                obj.put("data", "Created Post Successfully");
-            } else {
-                obj.put("status", false);
-                obj.put("message", "Could not Post");
+                obj.put("data", "Created comment successfully");
             }
         } catch (Exception e) {
             e.printStackTrace();

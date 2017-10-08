@@ -34,7 +34,7 @@ public class Unfollow extends HttpServlet {
             out.print(obj);
         } else {
             request.getSession();
-            String uid1 = (String) request.getSession().getAttribute("id");
+            String uid1 = (String) request.getSession().getAttribute("userId");
             String uid2 = request.getParameter("uid");
             out.print(DBHandler.unFollow(uid1, uid2));
         }

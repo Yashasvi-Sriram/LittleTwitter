@@ -31,10 +31,10 @@ public class NewComment extends HttpServlet {
             }
             out.print(obj);
         } else {
-            String id = (String) request.getSession().getAttribute("id");
-            String comment = request.getParameter("content");
-            String postid = request.getParameter("postid");
-            out.print(DBHandler.writeComment(id, postid, comment));
+            String id = (String) request.getSession().getAttribute("userId");
+            String text = request.getParameter("text");
+            String postId = request.getParameter("postId");
+            out.print(DBHandler.writeComment(id, postId, text));
         }
         out.close();
     }

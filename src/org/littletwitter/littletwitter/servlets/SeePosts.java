@@ -37,7 +37,7 @@ public class SeePosts extends HttpServlet {
                 offset = Integer.parseInt(request.getParameter("offset"));
             if (request.getParameter("limit") != null)
                 limit = Integer.parseInt(request.getParameter("limit"));
-            String id = (String) request.getSession().getAttribute("id");
+            String id = (String) request.getSession().getAttribute("userId");
             try {
                 obj.put("status", true);
                 obj.put("data", DBHandler.seePosts(id, offset, limit));
