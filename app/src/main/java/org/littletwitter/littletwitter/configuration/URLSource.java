@@ -18,4 +18,8 @@ public class URLSource {
     public static String addComment() {
         return IP_ADDRESS + "/NewComment";
     }
+
+    public static String addPost() {
+        return IP_ADDRESS+"/CreatePost";
+    }
 }

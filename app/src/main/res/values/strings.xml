@@ -24,4 +24,7 @@
     <string name="add_post">Add Post</string>
     <string name="add_comment">Add Comment</string>
     <string name="new_comment">write a comment</string>
+
+    <string name="new_post">Write Post here</string>
+    <string name="add_post_button">Add Post</string>
 </resources>
