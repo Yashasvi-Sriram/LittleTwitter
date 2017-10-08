@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,13 +46,13 @@ import okhttp3.Response;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String id; // user id
+    private String userId;
 
     private DrawerLayout drawerLayout;
     private OkHttpClient client;
     private View progressView;
-    private ImageView profilePicture;
-    private TextView userId;
+    private ImageView profilePictureView;
+    private TextView userIdView;
     private RecyclerView postListView;
     private SwipeRefreshLayout postListSwipeRefreshLayout;
     private PostListAdapter postListAdapter;
@@ -66,9 +65,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Extras
-        id = getIntent().getStringExtra("id");
-        // no id
-        if (id == null) {
+        userId = getIntent().getStringExtra("userId");
+        // no userId
+        if (userId == null) {
             finish();
         }
         setContentView(R.layout.activity_home);
@@ -76,14 +75,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // UI
         Toolbar toolbar = findViewById(R.id.app_bar_home).findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.app_bar_home).findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Home.this, AddPost.class));
-            }
-        });
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_home_drawer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -93,8 +84,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         NavigationView navigationView = drawerLayout.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        profilePicture = (ImageView) findViewById(R.id.profile_picture);
-        userId = (TextView) findViewById(R.id.user_id);
+        profilePictureView = (ImageView) findViewById(R.id.profile_picture);
+        userIdView = (TextView) findViewById(R.id.user_id);
+
         progressView = findViewById(R.id.activity_home).findViewById(R.id.logout_progress);
 
         View contentHome = findViewById(R.id.content_home);
@@ -165,6 +157,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.add_post:
+                startActivity(new Intent(this, AddPost.class));
+                break;
             case R.id.my_posts:
                 startActivity(new Intent(Home.this, MyPosts.class));
                 break;
@@ -294,13 +289,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         List<Post> posts = new ArrayList<>();
                         for (int i = 0; i < a.getData().length(); i++) {
                             Post post = new Post(a.getData().getJSONObject(i));
-                            if (!post.getUid().equals(id)) {
+                            if (!post.getUid().equals(userId)) {
                                 posts.add(post);
                             }
                         }
                         // reset post list view
                         if (offset == 0) {
-                            postListAdapter = new PostListAdapter(posts, Home.this);
+                            postListAdapter = new PostListAdapter(posts, Home.this, client);
                             postListView.setAdapter(postListAdapter);
                         } else {
                             // append new posts at the bottom

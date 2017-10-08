@@ -1,10 +1,13 @@
 * event listener on bottom reach
 * get user id from login activity and subtract from post fetch task
 * extract url
-display comments
-add post - image also
-add comment
+* display comments
+shared preferences dependency injection
+display user id
+* add comment
 self posts
+
+add post - image also
 search
 last point in PS -1 something
 

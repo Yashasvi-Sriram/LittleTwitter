@@ -37,7 +37,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     public void showAll() {
         showAll = true;
-        notifyItemRangeChanged(3, comments.size());
+        notifyItemRangeChanged(Config.DEFAULT_NO_OF_COMMENT_TO_DISPLAY, comments.size());
     }
 
     @Override
@@ -53,10 +53,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         holder.name.setText(post.getName());
         holder.text.setText(post.getText());
         holder.timestamp.setText(post.getTimestamp());
-        if (position > 2 && !showAll) {
+        if (position >= Config.DEFAULT_NO_OF_COMMENT_TO_DISPLAY && !showAll) {
             holder.container.setVisibility(View.GONE);
-        } else {
-            holder.container.setVisibility(View.VISIBLE);
         }
     }
 

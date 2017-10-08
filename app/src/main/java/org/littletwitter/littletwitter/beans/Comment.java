@@ -20,6 +20,13 @@ public class Comment {
         this.timestamp = jsonObject.getString("timestamp");
     }
 
+    public Comment(String uid, String name, String text, String timestamp) {
+        this.uid = uid;
+        this.name = name;
+        this.text = text;
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return this.uid + " " + this.text + " " + this.timestamp;

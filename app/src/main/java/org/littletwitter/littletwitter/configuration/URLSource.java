@@ -14,4 +14,8 @@ public class URLSource {
     public static String seePosts() {
         return IP_ADDRESS + "/SeePosts";
     }
+
+    public static String addComment() {
+        return IP_ADDRESS + "/NewComment";
+    }
 }

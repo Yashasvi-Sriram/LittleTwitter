@@ -109,7 +109,7 @@ public class Login extends AppCompatActivity {
         protected ServerResponse doInBackground(Void... params) {
             try {
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("id", userId)
+                        .add("userId", userId)
                         .add("password", password)
                         .build();
                 Request request = new Request.Builder()
@@ -135,7 +135,7 @@ public class Login extends AppCompatActivity {
             } else {
                 if (response.getStatus()) {
                     Intent i = new Intent(Login.this, Home.class);
-                    i.putExtra("id", userId);
+                    i.putExtra("userId", userId);
                     startActivity(i);
                 } else {
                     Toast.makeText(Login.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();

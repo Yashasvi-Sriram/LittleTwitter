@@ -33,8 +33,6 @@
         <activity
             android:name=".activities.MyPosts"
             android:label="@string/my_posts" />
-        <activity android:name=".activities.AddComment"
-            android:label="@string/add_comment"/>
     </application>
 
 </manifest>

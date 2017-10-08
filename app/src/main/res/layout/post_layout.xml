@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
     android:layout_marginTop="5dp"
-    android:background="@drawable/boring_border"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -30,33 +29,56 @@
         android:layout_below="@id/timestamp"
         android:padding="@dimen/activity_horizontal_margin" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/comments_list_view"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/comments_list_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/text">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/comments_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/comments_list_view"
-        android:orientation="horizontal">
+        </android.support.v7.widget.RecyclerView>
 
-        <Button
+        <ImageButton
             android:id="@+id/show_all_comments"
-            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/show_all" />
+            android:layout_below="@id/comments_list_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/white"
+            android:contentDescription="@string/show_all"
+            android:src="@drawable/ic_arrow_drop_down_circle_48dp" />
 
-        <Button
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comments_list_container"
+        android:background="@drawable/boring_border"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/new_comment_text"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/new_comment"
+            android:inputType="textMultiLine" />
+
+        <ImageButton
             android:id="@+id/add_comment"
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_comment" />
+            android:contentDescription="@string/add_comment"
+            android:src="@drawable/ic_send_24dp" />
 
     </LinearLayout>
 
