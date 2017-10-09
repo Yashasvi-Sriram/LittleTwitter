@@ -30,10 +30,10 @@ public class SearchUser extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            String id = request.getParameter("uid");
+            String search = request.getParameter("search");
             try {
                 obj.put("status", true);
-                obj.put("data", DBHandler.getSuggestion(id));
+                obj.put("data", DBHandler.getSuggestion(search));
             } catch (JSONException e) {
 
                 e.printStackTrace();

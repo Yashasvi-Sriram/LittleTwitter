@@ -68,7 +68,7 @@ INSERT INTO COMMENT (commentid, postid, uid, TIMESTAMP, TEXT)
 VALUES (nextval('commentid'), '2', '23121', CURRENT_TIMESTAMP, 'That is so cool!');
 
 SELECT *
-FROM follows;
+FROM post;
 
 
 
