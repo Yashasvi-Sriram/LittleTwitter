@@ -59,7 +59,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private View progressView;
     private ImageView profilePictureView;
     private TextView userIdView;
-    private boolean fetchingPostBatch = false;
     private SharedPreferences sp;
 
     @Override
