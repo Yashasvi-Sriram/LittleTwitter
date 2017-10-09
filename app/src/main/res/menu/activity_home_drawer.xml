@@ -8,7 +8,7 @@
             android:title="@string/add_post" />
         <item
             android:id="@+id/my_posts"
-            android:icon="@drawable/ic_explore_white_24dp"
+            android:icon="@drawable/ic_person_white_24dp"
             android:title="@string/my_posts" />
         <item
             android:id="@+id/search"

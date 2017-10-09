@@ -20,10 +20,14 @@ public class URLSource {
     }
 
     public static String addPost() {
-        return IP_ADDRESS+"/CreatePost";
+        return IP_ADDRESS + "/CreatePost";
     }
 
-    public static String search(){
-        return IP_ADDRESS+"";
+    public static String search() {
+        return IP_ADDRESS + "/SearchUser";
+    }
+
+    public static String seeMyPosts() {
+        return IP_ADDRESS + "/SeeMyPosts";
     }
 }

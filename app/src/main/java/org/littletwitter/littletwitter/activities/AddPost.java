@@ -176,9 +176,15 @@ public class AddPost extends AppCompatActivity {
 
     private void attemptAddPost() {
         String postText = text.getText().toString();
-        if (!postText.equals("") || !base64Image.equals("")) {
-            new AddPostTask(postText).execute();
+        if (postText.equals("") && base64Image.equals("")) {
+            Toast.makeText(this, "Empty post!", Toast.LENGTH_SHORT).show();
+            return;
         }
+        if (base64Image.length() > 1000000) {
+            Toast.makeText(this, "Image too big to post!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new AddPostTask(postText).execute();
     }
 
     private void showProgress(final boolean show) {
