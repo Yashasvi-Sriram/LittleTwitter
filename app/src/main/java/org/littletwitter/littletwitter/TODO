@@ -3,12 +3,11 @@
 * extract url
 * display comments
 * add comment
-self posts
+* shared preferences auto login
+* constraint picture size
+* my posts
 
-shared preferences auto login
 get user name & id, display them in drawer and new comments
-display user id
-constraint picture size
 fix camera issue
 use fragments
 
