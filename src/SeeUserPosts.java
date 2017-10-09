@@ -1,4 +1,3 @@
-package org.littletwitter.littletwitter.servlets;
 
 
 import java.io.IOException;
@@ -13,33 +12,45 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@WebServlet("/Follow")
-public class Follow extends HttpServlet {
+@WebServlet("/SeeUserPosts")
+public class SeeUserPosts extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String uid2 = request.getParameter("uid");
+
+        JSONObject obj = new JSONObject();
         if (request.getSession(false) == null) {
-            JSONObject obj = new JSONObject();
             try {
                 obj.put("status", false);
                 obj.put("message", "Invalid session");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            out.print(obj);
         } else {
+            int offset = 0;
+            int limit = 1000;
             request.getSession();
-            String uid1 = (String) request.getSession().getAttribute("userId");
-            out.print(DBHandler.follow(uid1, uid2));
+            if (request.getParameter("offset") != null)
+                offset = Integer.parseInt(request.getParameter("offset"));
+            if (request.getParameter("limit") != null)
+                limit = Integer.parseInt(request.getParameter("limit"));
+            String id = request.getParameter("uid");
+            try {
+                obj.put("status", true);
+                obj.put("data", DBHandler.seeUserPosts(id, offset, limit));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+        out.print(obj);
         out.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
+
 }

@@ -1,4 +1,3 @@
-package org.littletwitter.littletwitter.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,33 +11,34 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@WebServlet("/CreatePost")
-public class CreatePost extends HttpServlet {
+@WebServlet("/LogoutServlet")
+public class LogoutServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        if (request.getSession(false) == null) {
-            JSONObject obj = new JSONObject();
-            try {
-                obj.put("status", false);
-                obj.put("message", "Invalid session");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            out.print(obj);
-        } else {
-            String userId = (String) request.getSession().getAttribute("userId");
-            String image = request.getParameter("base64Image");
-            String post = request.getParameter("text");
-            out.print(DBHandler.createPost(userId, post, image));
-        }
-        out.close();
+        doPost(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        JSONObject obj = new JSONObject();
+        try {
+            if (request.getSession(false) == null) {
+                obj.put("status", false);
+                obj.put("message", "Invalid session");
+            } else {
+                request.getSession(false).invalidate();
+                obj.put("status", true);
+                obj.put("data", "Successfully logged out");
+                System.out.println("Logged Out");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        out.print(obj);
+        out.close();
     }
+
 }

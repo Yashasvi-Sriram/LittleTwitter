@@ -1,5 +1,3 @@
-package org.littletwitter.littletwitter.servlets;
-
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,11 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@WebServlet("/SeeMyPosts")
-public class SeeMyPosts extends HttpServlet {
+@WebServlet("/UserFollow")
+public class UserFollow extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -30,26 +32,17 @@ public class SeeMyPosts extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            int offset = 0;
-            int limit = 1000;
-            if (request.getParameter("offset") != null)
-                offset = Integer.parseInt(request.getParameter("offset"));
-            if (request.getParameter("limit") != null)
-                limit = Integer.parseInt(request.getParameter("limit"));
-            String id = (String) request.getSession().getAttribute("userId");
+            String uid = (String) request.getSession().getAttribute("userId");
             try {
                 obj.put("status", true);
-                obj.put("data", DBHandler.seeMyPosts(id, offset, limit));
+                obj.put("data", DBHandler.userFollow(uid));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            out.close();
         }
         out.print(obj);
         out.close();
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
     }
 
 }

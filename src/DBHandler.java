@@ -1,5 +1,3 @@
-package org.littletwitter.littletwitter.servlets;
-
 
 import java.sql.*;
 
@@ -10,8 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DBHandler {
-    private static String URL = "jdbc:postgresql://localhost:5080/postgres";
-    private static String USERNAME = "pandu";
+    private static String URL = "jdbc:postgresql://localhost:5940/postgres";
+    private static String USERNAME = "joshi";
     private static String PASSWORD = "";
 
     static {

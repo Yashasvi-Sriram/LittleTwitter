@@ -1,4 +1,3 @@
-package org.littletwitter.littletwitter.servlets;
 
 
 import java.io.IOException;
@@ -13,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@WebServlet("/SearchUser")
-public class SearchUser extends HttpServlet {
+@WebServlet("/SeeMyPosts")
+public class SeeMyPosts extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,12 +29,17 @@ public class SearchUser extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            String search = request.getParameter("search");
+            int offset = 0;
+            int limit = 1000;
+            if (request.getParameter("offset") != null)
+                offset = Integer.parseInt(request.getParameter("offset"));
+            if (request.getParameter("limit") != null)
+                limit = Integer.parseInt(request.getParameter("limit"));
+            String id = (String) request.getSession().getAttribute("userId");
             try {
                 obj.put("status", true);
-                obj.put("data", DBHandler.getSuggestion(search));
+                obj.put("data", DBHandler.seeMyPosts(id, offset, limit));
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
         }
