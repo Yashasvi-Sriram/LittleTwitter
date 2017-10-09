@@ -42,6 +42,7 @@ CREATE TABLE post (
   uid       VARCHAR(20),
   timestamp TIMESTAMP,
   text      TEXT,
+  image     TEXT            DEFAULT '',
   FOREIGN KEY (uid) REFERENCES "user" (uid)
   ON DELETE CASCADE
   ON UPDATE CASCADE

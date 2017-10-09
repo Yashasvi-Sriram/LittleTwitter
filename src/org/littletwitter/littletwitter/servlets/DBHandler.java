@@ -46,13 +46,14 @@ public class DBHandler {
         return obj;
     }
 
-    public static JSONObject createPost(String id, String postText) {
+    public static JSONObject createPost(String id, String postText, String base64Image) {
         JSONObject obj = new JSONObject();
-        String query = "INSERT INTO post(uid,text,timestamp) VALUES (?,?,CURRENT_TIMESTAMP);";
+        String query = "INSERT INTO post(uid, text, image, timestamp) VALUES (?, ?, ?, CURRENT_TIMESTAMP);";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement pStmt = conn.prepareStatement(query)) {
             pStmt.setString(1, id);
             pStmt.setString(2, postText);
+            pStmt.setString(3, base64Image);
             if (pStmt.executeUpdate() > 0) {
                 obj.put("status", true);
                 obj.put("data", "Created Post");
@@ -107,7 +108,7 @@ public class DBHandler {
 
     public static JSONArray seeUserPosts(String id, int offset, int limit) {
         JSONArray json = new JSONArray();
-        String query = "SELECT postid,timestamp,uid,text FROM post WHERE post.uid = ? ORDER BY timestamp DESC OFFSET ? LIMIT ?";
+        String query = "SELECT postid, timestamp, uid, text, image FROM post WHERE post.uid = ? ORDER BY timestamp DESC OFFSET ? LIMIT ?";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement postSt = conn.prepareStatement(query)) {
             postSt.setString(1, id);
@@ -123,7 +124,7 @@ public class DBHandler {
 
     public static JSONArray seePosts(String id, int offset, int limit) {
         JSONArray json = new JSONArray();
-        String query = "SELECT postid,timestamp,uid,text FROM post WHERE post.uid IN (SELECT uid2 FROM follows WHERE uid1 = ? UNION SELECT uid FROM \"user\" WHERE uid=? ) ORDER BY timestamp ASC OFFSET ? LIMIT ?";
+        String query = "SELECT postid, timestamp, uid, text, image FROM post WHERE post.uid IN (SELECT uid2 FROM follows WHERE uid1 = ? UNION SELECT uid FROM \"user\" WHERE uid=? ) ORDER BY timestamp ASC OFFSET ? LIMIT ?";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement postSt = conn.prepareStatement(query)) {
             postSt.setString(1, id);
