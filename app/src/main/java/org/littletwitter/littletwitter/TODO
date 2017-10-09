@@ -2,10 +2,14 @@
 * get user id from login activity and subtract from post fetch task
 * extract url
 * display comments
-shared preferences dependency injection
-display user id
 * add comment
 self posts
+
+shared preferences auto login
+get user name & id, display them in drawer and new comments
+display user id
+constraint picture size
+fix camera issue
 
 * add post
 image also

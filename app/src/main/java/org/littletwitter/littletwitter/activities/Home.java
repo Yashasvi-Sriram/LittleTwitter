@@ -280,12 +280,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             if (response == null) {
                 Toast.makeText(Home.this, "Server error", Toast.LENGTH_SHORT).show();
             } else {
-                if (!response.getStatus()) {
-                    Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                    if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
-                        startActivity(new Intent(Home.this, Login.class));
-                    }
-                } else {
+                if (response.getStatus()) {
                     try {
                         ArrayServerResponse a = (ArrayServerResponse) response;
                         List<Post> posts = new ArrayList<>();
@@ -318,6 +313,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(Home.this, "Client doesn't seem to know server well", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        startActivity(new Intent(Home.this, Login.class));
                     }
                 }
             }

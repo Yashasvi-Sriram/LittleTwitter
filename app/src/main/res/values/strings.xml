@@ -30,4 +30,6 @@
 
     <string name="search_hint">Search Here...</string>
     <string name="image">image</string>
+    <string name="select_image">Select Image</string>
+    <string name="submit">Submit</string>
 </resources>
