@@ -3,6 +3,7 @@ package org.littletwitter.littletwitter.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,8 +21,11 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
 import org.littletwitter.littletwitter.beans.Post;
+import org.littletwitter.littletwitter.configuration.SharedPrefs;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.cookies.Keys;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
+import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
 import org.littletwitter.littletwitter.customadapters.PostListAdapter;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
@@ -44,6 +48,7 @@ public class MyPosts extends AppCompatActivity {
     private int offset;
     private final int limit = 10;
     private OkHttpClient client;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +90,13 @@ public class MyPosts extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
         // Network
-        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
         client = new OkHttpClient.Builder()
                 .cookieJar(persistentCookieJar)
                 .build();
+
+        // Shared Preferences
+        sp = getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE);
 
         // Init
         startFromFirstBatch();
@@ -134,7 +142,6 @@ public class MyPosts extends AppCompatActivity {
                 if (response.getStatus()) {
                     try {
                         ArrayServerResponse a = (ArrayServerResponse) response;
-                        Log.i("hesoyam", a.getData().toString());
                         List<Post> posts = new ArrayList<>();
                         for (int i = 0; i < a.getData().length(); i++) {
                             Post post = new Post(a.getData().getJSONObject(i));
@@ -167,6 +174,7 @@ public class MyPosts extends AppCompatActivity {
                 } else {
                     Toast.makeText(MyPosts.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        sp.edit().remove(Keys.JSESSIONID).apply();
                         startActivity(new Intent(MyPosts.this, Login.class));
                     }
                 }

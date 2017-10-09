@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -26,8 +27,11 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
+import org.littletwitter.littletwitter.configuration.SharedPrefs;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.cookies.Keys;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
+import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
@@ -54,6 +58,7 @@ public class AddPost extends AppCompatActivity {
     private OkHttpClient client;
 
     private String base64Image = "";
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +80,13 @@ public class AddPost extends AppCompatActivity {
         form = v.findViewById(R.id.form);
 
         // Network
-        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
         client = new OkHttpClient.Builder()
                 .cookieJar(persistentCookieJar)
                 .build();
+        
+        // Shared Preferences
+        sp = getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE);
     }
 
     @Override
@@ -255,6 +263,7 @@ public class AddPost extends AppCompatActivity {
                 } else {
                     Toast.makeText(AddPost.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        sp.edit().remove(Keys.JSESSIONID).apply();
                         startActivity(new Intent(AddPost.this, Login.class));
                     }
                 }

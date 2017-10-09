@@ -3,6 +3,7 @@ package org.littletwitter.littletwitter.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,8 +30,11 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
 import org.littletwitter.littletwitter.beans.Post;
+import org.littletwitter.littletwitter.configuration.SharedPrefs;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.cookies.Keys;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
+import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
 import org.littletwitter.littletwitter.customadapters.PostListAdapter;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
@@ -47,8 +51,6 @@ import okhttp3.Response;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String userId;
-
     private DrawerLayout drawerLayout;
     private OkHttpClient client;
     private View progressView;
@@ -58,6 +60,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private SwipeRefreshLayout postListSwipeRefreshLayout;
     private PostListAdapter postListAdapter;
     private boolean fetchingPostBatch = false;
+    private SharedPreferences sp;
 
     private int offset;
     private final int limit = 10;
@@ -65,12 +68,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Extras
-        userId = getIntent().getStringExtra("userId");
-        // no userId
-        if (userId == null) {
-            finish();
-        }
         setContentView(R.layout.activity_home);
 
         // UI
@@ -124,10 +121,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 android.R.color.holo_red_light);
 
         // Network
-        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
         client = new OkHttpClient.Builder()
                 .cookieJar(persistentCookieJar)
                 .build();
+
+        // Shared Preferences
+        sp = getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE);
 
         // Init
         startFromFirstBatch();
@@ -244,6 +244,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
+            sp.edit().remove(Keys.JSESSIONID).apply();
             startActivity(new Intent(Home.this, Login.class));
         }
 
@@ -287,9 +288,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         List<Post> posts = new ArrayList<>();
                         for (int i = 0; i < a.getData().length(); i++) {
                             Post post = new Post(a.getData().getJSONObject(i));
-                            if (!post.getUid().equals(userId)) {
-                                posts.add(post);
-                            }
+                            posts.add(post);
                         }
                         // reset post list view
                         if (offset == 0) {
@@ -318,6 +317,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 } else {
                     Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        sp.edit().remove(Keys.JSESSIONID).apply();
                         startActivity(new Intent(Home.this, Login.class));
                     }
                 }

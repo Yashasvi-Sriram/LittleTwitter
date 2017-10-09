@@ -22,11 +22,13 @@ import org.littletwitter.littletwitter.activities.Login;
 import org.littletwitter.littletwitter.beans.Comment;
 import org.littletwitter.littletwitter.beans.Post;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.cookies.Keys;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,6 +181,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHo
                 if (!response.getStatus()) {
                     Toast.makeText(context, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                        context.getSharedPreferences(Keys.JSESSIONID, Context.MODE_PRIVATE).edit().remove(Keys.JSESSIONID).apply();
                         context.startActivity(new Intent(context, Login.class));
                     }
                 } else {

@@ -2,12 +2,15 @@ package org.littletwitter.littletwitter.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,8 +22,12 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
+import org.littletwitter.littletwitter.configuration.SharedPrefs;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.cookies.Keys;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
+import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
+import org.littletwitter.littletwitter.customadapters.Config;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
@@ -45,6 +52,12 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // If you have a session_id cookie then directly go to Home
+        SharedPreferences sharedPreferences = getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE);
+        if (sharedPreferences.getString(Keys.JSESSIONID, null) != null) {
+            startActivity(new Intent(this, Home.class));
+        }
+
         // UI
         userIdView = (EditText) findViewById(R.id.user_id);
         passwordView = (EditText) findViewById(R.id.password);
@@ -59,7 +72,7 @@ public class Login extends AppCompatActivity {
         progressView = findViewById(R.id.login_progress);
 
         // Network
-        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(this));
+        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
         client = new OkHttpClient.Builder()
                 .cookieJar(persistentCookieJar)
                 .build();
@@ -134,9 +147,7 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "Server error", Toast.LENGTH_SHORT).show();
             } else {
                 if (response.getStatus()) {
-                    Intent i = new Intent(Login.this, Home.class);
-                    i.putExtra("userId", userId);
-                    startActivity(i);
+                    startActivity(new Intent(Login.this, Home.class));
                 } else {
                     Toast.makeText(Login.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }

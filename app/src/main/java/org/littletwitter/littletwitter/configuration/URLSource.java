@@ -1,33 +1,35 @@
 package org.littletwitter.littletwitter.configuration;
 
+import okhttp3.Cookie;
+
 public class URLSource {
-    private static final String IP_ADDRESS = "http://192.168.0.5:8080";
+    public static final String IP_ADDRESS = "http://192.168.0.5:8080/";
 
     public static String login() {
-        return IP_ADDRESS + "/Login";
+        return IP_ADDRESS + "Login";
     }
 
     public static String logout() {
-        return IP_ADDRESS + "/LogoutServlet";
+        return IP_ADDRESS + "LogoutServlet";
     }
 
     public static String seePosts() {
-        return IP_ADDRESS + "/SeePosts";
+        return IP_ADDRESS + "SeePosts";
     }
 
     public static String addComment() {
-        return IP_ADDRESS + "/NewComment";
+        return IP_ADDRESS + "NewComment";
     }
 
     public static String addPost() {
-        return IP_ADDRESS + "/CreatePost";
+        return IP_ADDRESS + "CreatePost";
     }
 
     public static String search() {
-        return IP_ADDRESS + "/SearchUser";
+        return IP_ADDRESS + "SearchUser";
     }
 
     public static String seeMyPosts() {
-        return IP_ADDRESS + "/SeeMyPosts";
+        return IP_ADDRESS + "SeeMyPosts";
     }
 }
