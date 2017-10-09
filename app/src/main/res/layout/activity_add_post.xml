@@ -33,12 +33,30 @@
                 android:inputType="textMultiLine"
                 android:hint="@string/new_post"/>
 
+            <ImageView
+                android:id="@+id/add_post_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:scaleType="center"
+                android:layout_below="@id/add_post_data"
+                android:contentDescription="@string/image" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_post_image_button"
+                android:layout_below="@id/add_post_image"
+                android:layout_marginTop="8dp"
+                android:text="Add Photo"
+                android:textStyle="normal"/>
+
             <Button
                 android:id="@+id/add_post_button"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/add_post_data"
+                android:layout_below="@id/add_post_image_button"
                 android:layout_marginTop="16dp"
                 android:text="@string/add_post_button"
                 android:textStyle="bold" />
