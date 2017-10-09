@@ -8,9 +8,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
+import org.littletwitter.littletwitter.configuration.SharedPrefs;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
+import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
+import org.littletwitter.littletwitter.customadapters.PostListAdapter;
+import org.littletwitter.littletwitter.customadapters.SearchUserAutoCompleteAdapter;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
@@ -24,7 +31,7 @@ import okhttp3.Response;
 
 public class Search extends AppCompatActivity {
 
-    private EditText searchBar;
+    private AutoCompleteTextView searchBar;
     private OkHttpClient client;
 
     @Override
@@ -33,8 +40,15 @@ public class Search extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         View V = findViewById(R.id.activity_search);
-        searchBar = V.findViewById(R.id.search_bar);
 
+        // Network
+        UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
+        client = new OkHttpClient.Builder()
+                .cookieJar(persistentCookieJar)
+                .build();
+
+        searchBar = V.findViewById(R.id.search_bar);
+        searchBar.setAdapter(new SearchUserAutoCompleteAdapter(getApplicationContext(),client));
     }
 
     private void attemptSearchQuery(){
