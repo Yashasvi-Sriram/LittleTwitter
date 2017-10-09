@@ -9,18 +9,11 @@
     tools:context="org.littletwitter.littletwitter.activities.Home"
     tools:showIn="@layout/app_bar_home">
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/post_list_swipe_refresh_layout"
+    <fragment
+        class="org.littletwitter.littletwitter.fragments.InfinitePostListFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout="@layout/infinite_post_list_fragment" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/post_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.RecyclerView>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

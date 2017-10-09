@@ -100,6 +100,7 @@ public class InfinitePostListFragment extends Fragment {
         client = activityAPI.getClient();
 
         // Init
+        Snackbar.make(postListView, "Getting posts", Snackbar.LENGTH_SHORT).show();
         startFromFirstBatch();
     }
 

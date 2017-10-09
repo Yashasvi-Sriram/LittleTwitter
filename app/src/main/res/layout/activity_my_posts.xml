@@ -8,7 +8,6 @@
     tools:context="org.littletwitter.littletwitter.activities.MyPosts">
 
     <fragment
-        android:id="@+id/infinite_post_list_view"
         class="org.littletwitter.littletwitter.fragments.InfinitePostListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

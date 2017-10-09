@@ -12,6 +12,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,6 +38,7 @@ import org.littletwitter.littletwitter.cookies.Keys;
 import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
 import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
 import org.littletwitter.littletwitter.customadapters.PostListAdapter;
+import org.littletwitter.littletwitter.fragments.InfinitePostListFragment;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
@@ -50,21 +52,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, InfinitePostListFragment.ActivityAPI {
 
     private DrawerLayout drawerLayout;
     private OkHttpClient client;
     private View progressView;
     private ImageView profilePictureView;
     private TextView userIdView;
-    private RecyclerView postListView;
-    private SwipeRefreshLayout postListSwipeRefreshLayout;
-    private PostListAdapter postListAdapter;
     private boolean fetchingPostBatch = false;
     private SharedPreferences sp;
-
-    private int offset;
-    private final int limit = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,39 +84,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         progressView = findViewById(R.id.activity_home).findViewById(R.id.logout_progress);
 
-        View contentHome = findViewById(R.id.content_home);
-        postListView = contentHome.findViewById(R.id.post_list);
-        final LinearLayoutManager postListViewLayoutManager = new LinearLayoutManager(this);
-        postListView.setLayoutManager(postListViewLayoutManager);
-        postListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    int visibleItemCount = postListViewLayoutManager.getChildCount();
-                    int totalItemCount = postListViewLayoutManager.getItemCount();
-                    int pastVisibleItems = postListViewLayoutManager.findFirstVisibleItemPosition();
-                    if (!fetchingPostBatch && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                        fetchingPostBatch = true;
-                        // dirty line
-                        Snackbar.make(progressView, "Getting more posts", Snackbar.LENGTH_SHORT).show();
-                        fetchNextBatchOfPosts();
-                    }
-                }
-            }
-        });
-
-        postListSwipeRefreshLayout = contentHome.findViewById(R.id.post_list_swipe_refresh_layout);
-        postListSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                startFromFirstBatch();
-            }
-        });
-        postListSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
         // Network
         UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
         client = new OkHttpClient.Builder()
@@ -129,9 +92,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         // Shared Preferences
         sp = getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE);
-
-        // Init
-        startFromFirstBatch();
     }
 
     @Override
@@ -141,18 +101,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_home_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -182,15 +130,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         new UserLogoutTask().execute();
     }
 
-    private void startFromFirstBatch() {
-        offset = 0;
-        new PostFetchTask().execute();
-    }
-
-    private void fetchNextBatchOfPosts() {
-        new PostFetchTask().execute();
-    }
-
     private void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -202,7 +141,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
-
         progressView.setVisibility(show ? View.VISIBLE : View.GONE);
         progressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
@@ -210,6 +148,27 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 progressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
+    }
+
+    @Override
+    public void onInvalidSession() {
+        sp.edit().remove(Keys.JSESSIONID).apply();
+        startActivity(new Intent(this, Login.class));
+    }
+
+    @Override
+    public OkHttpClient getClient() {
+        return client;
+    }
+
+    @Override
+    public String getCompleteURL() {
+        return URLSource.seePosts();
+    }
+
+    @Override
+    public List<Pair<String, String>> getURLParameters() {
+        return new ArrayList<>();
     }
 
     private class UserLogoutTask extends AsyncTask<Void, Void, ServerResponse> {
@@ -252,78 +211,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         @Override
         protected void onCancelled() {
             showProgress(false);
-        }
-    }
-
-    private class PostFetchTask extends AsyncTask<Void, Void, ServerResponse> {
-        @Override
-        protected ServerResponse doInBackground(Void... params) {
-            try {
-                HttpUrl.Builder urlBuilder = HttpUrl.parse(URLSource.seePosts()).newBuilder()
-                        .addQueryParameter("offset", String.valueOf(offset))
-                        .addQueryParameter("limit", String.valueOf(limit));
-
-                Request request = new Request.Builder()
-                        .url(urlBuilder.build().toString())
-                        .build();
-
-                Response response = client.newCall(request).execute();
-                String body = response.body().string();
-
-                return new ArrayServerResponse(body);
-            } catch (IOException | JSONException | NullPointerException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final ServerResponse response) {
-            postListSwipeRefreshLayout.setRefreshing(false);
-            if (response == null) {
-                Toast.makeText(Home.this, "Server error", Toast.LENGTH_SHORT).show();
-            } else {
-                if (response.getStatus()) {
-                    try {
-                        ArrayServerResponse a = (ArrayServerResponse) response;
-                        List<Post> posts = new ArrayList<>();
-                        for (int i = 0; i < a.getData().length(); i++) {
-                            Post post = new Post(a.getData().getJSONObject(i));
-                            posts.add(post);
-                        }
-                        // reset post list view
-                        if (offset == 0) {
-                            postListAdapter = new PostListAdapter(posts, Home.this, client);
-                            postListView.setAdapter(postListAdapter);
-                        } else {
-                            // append new posts at the bottom
-                            for (Post newPost : posts) {
-                                postListAdapter.add(newPost);
-                            }
-                        }
-                        // last batch
-                        if (a.getData().length() < limit) {
-                            offset -= limit;
-                            offset += a.getData().length();
-                        }
-                        if (a.getData().length() == 0) {
-                            // dirty line
-                            Snackbar.make(progressView, "End of posts!", Snackbar.LENGTH_SHORT).show();
-                        }
-                        offset += limit;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(Home.this, "Client doesn't seem to know server well", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(Home.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                    if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
-                        sp.edit().remove(Keys.JSESSIONID).apply();
-                        startActivity(new Intent(Home.this, Login.class));
-                    }
-                }
-            }
-            fetchingPostBatch = false;
         }
     }
 
