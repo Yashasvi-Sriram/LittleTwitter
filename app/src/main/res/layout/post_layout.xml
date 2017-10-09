@@ -29,11 +29,21 @@
         android:layout_below="@id/timestamp"
         android:padding="@dimen/activity_horizontal_margin" />
 
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:contentDescription="@string/image" />
+
     <RelativeLayout
         android:id="@+id/comments_list_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text">
+        android:layout_below="@id/image">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/comments_list_view"

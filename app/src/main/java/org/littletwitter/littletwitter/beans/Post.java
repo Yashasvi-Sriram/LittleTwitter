@@ -10,6 +10,7 @@ import java.util.List;
 public class Post {
     private int postId;
     private String uid;
+    private String image;
     private String text;
     private String timestamp;
     private List<Comment> comments = new ArrayList<>();
@@ -18,6 +19,7 @@ public class Post {
         this.postId = jsonObject.getInt("postid");
         this.uid = jsonObject.getString("uid");
         this.text = jsonObject.getString("text");
+        this.image = jsonObject.getString("image");
         this.timestamp = jsonObject.getString("timestamp");
         JSONArray jComments = jsonObject.getJSONArray("Comment");
         List<Comment> comments = new ArrayList<>();
@@ -54,6 +56,14 @@ public class Post {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getTimestamp() {

@@ -2,16 +2,20 @@ package org.littletwitter.littletwitter.customadapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +80,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHo
         final Post post = posts.get(holder.getAdapterPosition());
         holder.userId.setText(post.getUid());
         holder.text.setText(post.getText());
+        byte[] decodedString = Base64.decode(post.getImage(), Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.image.setImageBitmap(decodedBitmap);
         holder.timestamp.setText(post.getTimestamp());
 
         final CommentListAdapter commentListAdapter = new CommentListAdapter(post.getComments());
@@ -112,6 +119,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHo
         private TextView userId;
         private TextView text;
         private TextView timestamp;
+        private ImageView image;
         private RecyclerView commentsListView;
         private ImageButton showAllComments;
         private ImageButton addComment;
@@ -123,6 +131,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHo
             layout = v;
             userId = v.findViewById(R.id.user_id);
             text = v.findViewById(R.id.text);
+            image = v.findViewById(R.id.image);
             timestamp = v.findViewById(R.id.timestamp);
             commentsListView = v.findViewById(R.id.comments_list_view);
             LinearLayoutManager postListViewLayoutManager = new LinearLayoutManager(context);

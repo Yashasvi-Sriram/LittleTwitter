@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -299,15 +300,15 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                             for (Post newPost : posts) {
                                 postListAdapter.add(newPost);
                             }
-                            // last batch
-                            if (a.getData().length() < limit) {
-                                offset -= limit;
-                                offset += a.getData().length();
-                            }
-                            if (a.getData().length() == 0) {
-                                // dirty line
-                                Snackbar.make(progressView, "End of posts!", Snackbar.LENGTH_SHORT).show();
-                            }
+                        }
+                        // last batch
+                        if (a.getData().length() < limit) {
+                            offset -= limit;
+                            offset += a.getData().length();
+                        }
+                        if (a.getData().length() == 0) {
+                            // dirty line
+                            Snackbar.make(progressView, "End of posts!", Snackbar.LENGTH_SHORT).show();
                         }
                         offset += limit;
                     } catch (JSONException e) {
