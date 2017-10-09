@@ -7,18 +7,11 @@
     android:layout_height="match_parent"
     tools:context="org.littletwitter.littletwitter.activities.MyPosts">
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/post_list_swipe_refresh_layout"
+    <fragment
+        android:id="@+id/infinite_post_list_view"
+        class="org.littletwitter.littletwitter.fragments.InfinitePostListFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/post_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.RecyclerView>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        tools:layout="@layout/infinite_post_list_fragment" />
 
 </RelativeLayout>
