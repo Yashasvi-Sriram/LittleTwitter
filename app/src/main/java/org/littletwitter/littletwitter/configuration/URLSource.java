@@ -36,4 +36,16 @@ public class URLSource {
     public static String seeUserPosts() {
         return IP_ADDRESS + "SeeUserPosts";
     }
+
+    public static String getFollowers() {
+        return IP_ADDRESS + "UserFollow";
+    }
+
+    public static String followUser() {
+        return IP_ADDRESS + "Follow";
+    }
+
+    public static String unFollowUser() {
+        return IP_ADDRESS + "Unfollow";
+    }
 }
