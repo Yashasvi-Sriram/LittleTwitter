@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,8 +19,17 @@ public class Login extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("userId");
-        String password = request.getParameter("password");
+        System.out.println("here");
+        String id=null;
+        String password=null;
+        try {
+        	id = URLDecoder.decode(request.getParameter("userId"),"UTF-8") ;
+            System.out.println(id);
+            password = URLDecoder.decode(request.getParameter("password"),"UTF-8");
+            System.out.println(password);
+        }catch(Exception e) {
+        	System.out.println("Error");
+        }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();

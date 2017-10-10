@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,9 +30,9 @@ public class CreatePost extends HttpServlet {
             }
             out.print(obj);
         } else {
-            String userId = (String) request.getSession().getAttribute("userId");
-            String image = request.getParameter("base64Image");
-            String post = request.getParameter("text");
+            String userId = URLDecoder.decode((String) request.getSession().getAttribute("userId"),"UTF-8");
+            String image = URLDecoder.decode(request.getParameter("base64Image"),"UTF-8");
+            String post = URLDecoder.decode(request.getParameter("text"),"UTF-8");
             out.print(DBHandler.createPost(userId, post, image));
         }
         out.close();

@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,9 +30,9 @@ public class NewComment extends HttpServlet {
             }
             out.print(obj);
         } else {
-            String id = (String) request.getSession().getAttribute("userId");
-            String text = request.getParameter("text");
-            String postId = request.getParameter("postId");
+            String id = URLDecoder.decode((String) request.getSession().getAttribute("userId"),"UTF-8");
+            String text = URLDecoder.decode(request.getParameter("text"),"UTF-8");
+            String postId = URLDecoder.decode(request.getParameter("postId"),"UTF-8");
             out.print(DBHandler.writeComment(id, postId, text));
         }
         out.close();
