@@ -3,7 +3,7 @@ package org.littletwitter.littletwitter.configuration;
 import okhttp3.Cookie;
 
 public class URLSource {
-    public static final String IP_ADDRESS = "http://192.168.0.70:8080/LittleTwitter/";
+    public static final String IP_ADDRESS = "http://192.168.0.9:8080/LittleTwitter/";
 
     public static String login() {
         return IP_ADDRESS + "Login";

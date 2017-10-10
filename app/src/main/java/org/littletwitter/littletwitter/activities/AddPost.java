@@ -39,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -232,8 +233,8 @@ public class AddPost extends AppCompatActivity {
         protected ServerResponse doInBackground(Void... voids) {
             try {
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("text", postContentText)
-                        .add("base64Image", base64Image)
+                        .add("text", URLEncoder.encode(postContentText, "utf-8"))
+                        .add("base64Image", URLEncoder.encode(base64Image, "utf-8"))
                         .build();
                 Request request = new Request.Builder()
                         .url(URLSource.addPost())
