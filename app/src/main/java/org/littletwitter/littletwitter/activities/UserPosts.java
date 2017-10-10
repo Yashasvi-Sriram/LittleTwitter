@@ -30,6 +30,11 @@ public class UserPosts extends AppCompatActivity implements InfinitePostListFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_posts);
 
+        // Back button
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         userId = getIntent().getStringExtra("userId");
         if (userId == null) {
             finish();

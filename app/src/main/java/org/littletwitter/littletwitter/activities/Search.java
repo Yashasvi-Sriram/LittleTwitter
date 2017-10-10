@@ -43,6 +43,12 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
         controlCenter = v.findViewById(R.id.control_center);
         controlCenter.setVisibility(View.GONE);
 
+        // Back button
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        // Network
         Button viewPosts = v.findViewById(R.id.view_posts);
         viewPosts.setOnClickListener(new View.OnClickListener() {
             @Override

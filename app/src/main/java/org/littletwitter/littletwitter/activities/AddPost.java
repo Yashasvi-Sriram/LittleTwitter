@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -65,6 +66,11 @@ public class AddPost extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
 
+        // Back button
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         // UI
         View v = findViewById(R.id.activity_add_post);
         text = v.findViewById(R.id.text);
@@ -84,7 +90,7 @@ public class AddPost extends AppCompatActivity {
         client = new OkHttpClient.Builder()
                 .cookieJar(persistentCookieJar)
                 .build();
-        
+
         // Shared Preferences
         sp = getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE);
     }
@@ -102,6 +108,9 @@ public class AddPost extends AppCompatActivity {
             case R.id.submit:
                 attemptAddPost();
                 break;
+            case R.id.content_home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
             default:
                 break;
         }

@@ -28,14 +28,18 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.AddPost"
+            android:parentActivityName=".activities.Home"
             android:label="@string/add_post" />
         <activity
             android:name=".activities.Search"
+            android:parentActivityName=".activities.Home"
             android:label="@string/search" />
         <activity
             android:name=".activities.MyPosts"
+            android:parentActivityName=".activities.Home"
             android:label="@string/my_posts" />
         <activity android:name=".activities.UserPosts"
+            android:parentActivityName=".activities.Search"
             android:label="@string/user_posts"/>
     </application>
 
