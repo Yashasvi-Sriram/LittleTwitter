@@ -210,10 +210,10 @@ public class DBHandler {
     }
 
     public static JSONArray getSuggestion(String search) {
-        JSONArray jsonToSend = new JSONArray();
+        JSONArray jsonArray = new JSONArray();
         String query = "SELECT \"user\".name,\"user\".uid,\"user\".email FROM \"user\" WHERE \"user\".name LIKE ? OR \"user\".uid LIKE ? OR \"user\".email LIKE ? LIMIT 10";
         if (search.length() < 3) {
-            return jsonToSend;
+            return jsonArray;
         }
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement commSt = conn.prepareStatement(query)) {
@@ -222,11 +222,11 @@ public class DBHandler {
             commSt.setString(2, search);
             commSt.setString(3, search);
             ResultSet rset = commSt.executeQuery();
-            jsonToSend.put(resultSetConverter(rset));
+            jsonArray = resultSetConverter(rset);
         } catch (SQLException | JSONException e) {
             e.printStackTrace();
         }
-        return jsonToSend;
+        return jsonArray;
     }
 
     private static JSONArray resultSetConverter(ResultSet rs) throws SQLException, JSONException {

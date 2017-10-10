@@ -38,7 +38,7 @@ public class SeeUserPosts extends HttpServlet {
                 offset = Integer.parseInt(request.getParameter("offset"));
             if (request.getParameter("limit") != null)
                 limit = Integer.parseInt(request.getParameter("limit"));
-            String id = request.getParameter("uid");
+            String id = request.getParameter("userId");
             try {
                 obj.put("status", true);
                 obj.put("data", DBHandler.seeUserPosts(id, offset, limit));

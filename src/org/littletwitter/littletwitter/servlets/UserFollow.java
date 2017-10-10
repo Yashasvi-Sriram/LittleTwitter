@@ -40,7 +40,6 @@ public class UserFollow extends HttpServlet {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            out.close();
         }
         out.print(obj);
         out.close();
