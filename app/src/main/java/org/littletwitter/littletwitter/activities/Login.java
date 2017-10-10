@@ -32,6 +32,7 @@ import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -122,8 +123,8 @@ public class Login extends AppCompatActivity {
         protected ServerResponse doInBackground(Void... params) {
             try {
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("userId", userId)
-                        .add("password", password)
+                        .add("userId", URLEncoder.encode(userId, "utf-8"))
+                        .add("password", URLEncoder.encode(password, "utf-8"))
                         .build();
                 Request request = new Request.Builder()
                         .url(URLSource.login())

@@ -32,6 +32,7 @@ import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,8 +166,8 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.ViewHo
         protected ServerResponse doInBackground(Void... params) {
             try {
                 HttpUrl.Builder urlBuilder = HttpUrl.parse(URLSource.addComment()).newBuilder()
-                        .addQueryParameter("postId", String.valueOf(postId))
-                        .addQueryParameter("text", String.valueOf(text));
+                        .addQueryParameter("postId", URLEncoder.encode(String.valueOf(postId), "utf-8"))
+                        .addQueryParameter("text",URLEncoder.encode(String.valueOf(text), "utf-8"));
 
                 Request request = new Request.Builder()
                         .url(urlBuilder.build().toString())

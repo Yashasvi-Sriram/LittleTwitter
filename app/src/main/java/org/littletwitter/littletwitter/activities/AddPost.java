@@ -40,6 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -126,18 +127,6 @@ public class AddPost extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     image.setImageBitmap(bitmap);
                     base64Image = convertBitmapToBase64(bitmap);
-                } else if (requestCode == REQUEST_IMAGE_CAPTURE_CODE) {
-                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                    File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
-                    FileOutputStream fo;
-                    destination.createNewFile();
-                    fo = new FileOutputStream(destination);
-                    fo.write(bytes.toByteArray());
-                    fo.close();
-                    image.setImageBitmap(bitmap);
-                    base64Image = convertBitmapToBase64(bitmap);
                 }
             }
         } catch (IOException | NullPointerException e) {
@@ -147,7 +136,7 @@ public class AddPost extends AppCompatActivity {
     }
 
     private void openDialog() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+        final CharSequence[] items = { "Choose from Library", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add an Image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -155,13 +144,9 @@ public class AddPost extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
                 switch (item) {
                     case 0:
-//                        cameraIntent();
-                        Toast.makeText(AddPost.this, "Sorry, this feature is not yet available", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
                         galleryIntent();
                         break;
-                    case 2:
+                    case 1:
                         dialog.dismiss();
                         break;
                     default:
@@ -170,11 +155,6 @@ public class AddPost extends AppCompatActivity {
             }
         });
         builder.show();
-    }
-
-    private void cameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE_CODE);
     }
 
     private void galleryIntent() {
@@ -241,8 +221,8 @@ public class AddPost extends AppCompatActivity {
         protected ServerResponse doInBackground(Void... voids) {
             try {
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("text", postContentText)
-                        .add("base64Image", base64Image)
+                        .add("text", URLEncoder.encode(postContentText, "utf-8"))
+                        .add("base64Image", URLEncoder.encode(base64Image, "utf-8"))
                         .build();
                 Request request = new Request.Builder()
                         .url(URLSource.addPost())
