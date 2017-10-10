@@ -1,8 +1,7 @@
 package org.littletwitter.littletwitter.customadapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,115 +12,159 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.littletwitter.littletwitter.R;
-import org.littletwitter.littletwitter.activities.AddPost;
+import org.littletwitter.littletwitter.activities.Search;
 import org.littletwitter.littletwitter.configuration.URLSource;
+import org.littletwitter.littletwitter.responses.ArrayServerResponse;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Created by joshi on 9/10/17.
- */
-
 public class SearchUserAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
-
-    private Context mContext;
+    private Context context;
     private OkHttpClient client;
-    private JSONArray usersFromSearch = new JSONArray();
+    private List<SearchResult> searchResults = new ArrayList<>();
 
     public SearchUserAutoCompleteAdapter(Context context, OkHttpClient client) {
-        this.mContext = context;
+        this.context = context;
         this.client = client;
     }
 
     @Override
-    public JSONObject getItem(int index) {
-        try{
-            return usersFromSearch.getJSONObject(index);
-        }catch (org.json.JSONException e){
-            return new JSONObject();
-        }
+    public SearchResult getItem(int index) {
+        return searchResults.get(index);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override
     public int getCount() {
-        return usersFromSearch.length();
+        return searchResults.size();
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        if(convertView == null){
-            LayoutInflater inflater = (LayoutInflater) mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.search_suggestions_layout, parent, false);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    
-                }
-            });
-        }try {
-            ((TextView) convertView.findViewById(R.id.search_uid)).setText(getItem(position).getString("uid"));
-            ((TextView) convertView.findViewById(R.id.search_name)).setText(getItem(position).getString("name"));
-            ((TextView) convertView.findViewById(R.id.search_email)).setText(getItem(position).getString("email"));
-        }catch (Exception e ){
-
+    public View getView(final int position, View view, ViewGroup parent) {
+        final SearchResult searchResult = getItem(position);
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.search_suggestions_layout, parent, false);
         }
-        return convertView;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ActivityAPI) context).onSearchResultClick(searchResult.uid, searchResult.name, searchResult.email);
+            }
+        });
+        ((TextView) view.findViewById(R.id.uid)).setText(searchResult.uid);
+        ((TextView) view.findViewById(R.id.name)).setText(searchResult.name);
+        ((TextView) view.findViewById(R.id.email)).setText(searchResult.email);
+        return view;
     }
 
     @Override
-    public Filter getFilter(){
-        Filter filter = new Filter() {
+    public Filter getFilter() {
+        return new Filter() {
             @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
+            protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults filterResults = new FilterResults();
-                if (constraint != null && constraint.length()>=3) {
-                    JSONArray users = searchUsers(constraint.toString());
-                    filterResults.values = users;
-                    filterResults.count = users.length();
+                // search only when search string >= 3
+                if (charSequence != null && charSequence.length() >= 3) {
+                    ArrayServerResponse response = searchUsers(charSequence.toString());
+                    if (response == null) {
+                        filterResults.count = 2;
+                    } else {
+                        filterResults.values = response;
+                        filterResults.count = 1;
+                    }
                 }
                 return filterResults;
             }
 
             @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
+            protected void publishResults(CharSequence charSequence, FilterResults results) {
                 if (results != null && results.count > 0) {
-                    usersFromSearch = (JSONArray) results.values;
-                    notifyDataSetChanged();
+                    if (results.count == 1) {
+                        try {
+                            ArrayServerResponse response = (ArrayServerResponse) results.values;
+                            if (response.getStatus()) {
+                                searchResults = SearchResult.fromJSONArray(response.getData());
+                            } else {
+                                Toast.makeText(context, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                                if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
+                                    ((ActivityAPI) context).onInvalidSession();
+                                }
+                            }
+                            notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            searchResults = new ArrayList<>();
+                            notifyDataSetInvalidated();
+                            Toast.makeText(context, "Client doesn't seem to know server well", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (results.count == 2) {
+                        searchResults = new ArrayList<>();
+                        Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
+                        notifyDataSetInvalidated();
+                    }
                 } else {
                     notifyDataSetInvalidated();
                 }
-            }};
-        return filter;
+            }
+        };
     }
 
-    private JSONArray searchUsers(String searchQuery){
-        JSONArray userList = null;
+    private ArrayServerResponse searchUsers(String searchQuery) {
         try {
             HttpUrl.Builder urlBuilder = HttpUrl.parse(URLSource.search()).newBuilder()
-                    .addQueryParameter("search",searchQuery);
+                    .addQueryParameter("search", searchQuery);
             Request request = new Request.Builder()
                     .url(urlBuilder.build().toString())
                     .build();
+
             Response response = client.newCall(request).execute();
-            JSONObject responseObject = new JSONObject( response.body().string() );
-            if(responseObject.getBoolean("status"))
-                userList = responseObject.getJSONArray("data").getJSONArray(0);
-        }catch (Exception e){
+
+            return new ArrayServerResponse(response.body().string());
+        } catch (JSONException | IOException | NullPointerException e) {
             e.printStackTrace();
+            return null;
         }
-        return userList;
     }
 
+    private static class SearchResult {
+        private String uid;
+        private String email;
+        private String name;
+
+        private SearchResult(JSONObject obj) throws JSONException {
+            uid = obj.getString("uid");
+            name = obj.getString("name");
+            email = obj.getString("email");
+        }
+
+        private static List<SearchResult> fromJSONArray(JSONArray jsonArray) throws JSONException {
+            List<SearchResult> list = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                list.add(new SearchResult(jsonArray.getJSONObject(i)));
+            }
+            return list;
+        }
+    }
+
+    public interface ActivityAPI {
+        public void onSearchResultClick(String uid, String name, String email);
+
+        public void onInvalidSession();
+    }
 }

@@ -8,11 +8,79 @@
     tools:context="org.littletwitter.littletwitter.activities.Search">
 
     <AutoCompleteTextView
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/search_bar"
-        android:hint="Search User..."
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"/>
+        android:layout_margin="10dp"
+        android:hint="@string/search_people"
+        android:padding="10dp" />
+
+
+    <RelativeLayout
+        android:id="@+id/control_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/uid"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="10dp"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/name"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/email"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black" />
+
+            <Button
+                android:id="@+id/toggle_follow"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="follow/unfollow todo" />
+
+            <Button
+                android:id="@+id/view_posts"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/view_posts" />
+
+            <Button
+                android:id="@+id/cancel"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

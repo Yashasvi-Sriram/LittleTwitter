@@ -28,8 +28,13 @@
     <string name="new_post">Write Post here</string>
     <string name="add_post_button">Add Post</string>
 
-    <string name="search_hint">Search Here...</string>
+    <string name="search_hint">Search Here</string>
     <string name="image">image</string>
     <string name="select_image">Select Image</string>
     <string name="submit">Submit</string>
+    <string name="search_people">Search people</string>
+    <string name="view_posts">View Posts</string>
+    <string name="toggle_follow">Toggle Follow</string>
+    <string name="user_posts">User Posts</string>
+    <string name="cancel">cancel</string>
 </resources>

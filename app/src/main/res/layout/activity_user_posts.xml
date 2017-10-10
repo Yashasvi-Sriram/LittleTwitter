@@ -2,19 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="org.littletwitter.littletwitter.activities.Home"
-    tools:showIn="@layout/app_bar_home">
+    android:id="@+id/activity_user_posts"
+    tools:context="org.littletwitter.littletwitter.activities.UserPosts">
+
+    <TextView
+        android:id="@+id/user_id"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:textColor="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/infinite_posts_fragment"
         class="org.littletwitter.littletwitter.fragments.InfinitePostListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/user_id"
         tools:layout="@layout/infinite_post_list_fragment" />
-
 
 </RelativeLayout>

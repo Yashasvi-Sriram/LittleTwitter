@@ -3,8 +3,8 @@
     package="org.littletwitter.littletwitter">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -35,6 +35,8 @@
         <activity
             android:name=".activities.MyPosts"
             android:label="@string/my_posts" />
+        <activity android:name=".activities.UserPosts"
+            android:label="@string/user_posts"/>
     </application>
 
 </manifest>
