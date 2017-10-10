@@ -41,6 +41,10 @@ public class Search extends AppCompatActivity {
 
         View V = findViewById(R.id.activity_search);
 
+        //back button
+        if(getActionBar() != null)
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Network
         UniversalCookieJar persistentCookieJar = new UniversalCookieJar(new SetCookieCache(), new UniversalCookiePersistor(this, SharedPrefs.SHARED_PREFS_NAME));
         client = new OkHttpClient.Builder()

@@ -55,6 +55,10 @@ public class MyPosts extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_posts);
 
+        //back button
+        if(getActionBar() != null)
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+
         // UI
         final View v = findViewById(R.id.activity_my_posts);
         postListView = v.findViewById(R.id.post_list);
