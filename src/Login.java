@@ -24,9 +24,7 @@ public class Login extends HttpServlet {
         String password=null;
         try {
         	id = URLDecoder.decode(request.getParameter("userId"),"UTF-8") ;
-            System.out.println(id);
             password = URLDecoder.decode(request.getParameter("password"),"UTF-8");
-            System.out.println(password);
         }catch(Exception e) {
         	System.out.println("Error");
         }
