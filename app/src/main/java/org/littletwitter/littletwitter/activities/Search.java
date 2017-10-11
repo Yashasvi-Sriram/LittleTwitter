@@ -49,8 +49,8 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
     private AutoCompleteTextView searchBar;
     private OkHttpClient client;
 
-    private String unFollow = "UnFollow";
-    private String follow = "Follow";
+    private static final String UN_FOLLOW = "Un Follow";
+    private static final String FOLLOW = "Follow";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +85,10 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
         toggleFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Objects.equals(toggleFollow.getText().toString(), unFollow)) {
+                if (Objects.equals(toggleFollow.getText().toString(), UN_FOLLOW)) {
                     new UnFollowUserTask().execute();
-                } else if (Objects.equals(toggleFollow.getText().toString(), follow)) {
+                } else if (Objects.equals(toggleFollow.getText().toString(), FOLLOW)) {
                     new FollowUserTask().execute();
-                } else {
-                    //TODO
                 }
             }
         });
@@ -120,49 +118,33 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
         searchBar.dismissDropDown();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+        // get followees of current user
         new GetFollowersTask().execute();
-    }
-
-    private void afterGetFollowees(JSONArray followees) {
-
-        boolean followee = false;
-        JSONObject a = null;
-
-        for (int i = 0; i < followees.length(); i++) {
-            try {
-                a = (JSONObject) followees.get(i);
-                if (Objects.equals(a.getString("uid"), selectedUserId)) {
-                    followee = true;
-                    break;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                //TODO
-            }
-        }
-
-        if (followee) {
-            toggleFollow.setText(unFollow);
-        } else {
-            toggleFollow.setText(follow);
-        }
-
-        controlCenter.setVisibility(View.VISIBLE);
-
-    }
-
-    private void toggleFollowButton(boolean followToUnFollow) {
-        if (followToUnFollow) {
-            toggleFollow.setText(unFollow);
-        } else {
-            toggleFollow.setText(follow);
-        }
     }
 
     @Override
     public void onInvalidSession() {
         getSharedPreferences(SharedPrefs.SHARED_PREFS_NAME, MODE_PRIVATE).edit().remove(Keys.JSESSIONID).apply();
         startActivity(new Intent(this, Login.class));
+    }
+
+    private void afterGetFollowees(JSONArray followees) {
+        boolean followee = false;
+        for (int i = 0; i < followees.length(); i++) {
+            try {
+                JSONObject a = (JSONObject) followees.get(i);
+                if (Objects.equals(a.getString("uid"), selectedUserId)) {
+                    followee = true;
+                    break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Client doesn't seem to know server well", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        toggleFollow.setText(followee ? UN_FOLLOW : FOLLOW);
+        controlCenter.setVisibility(View.VISIBLE);
     }
 
     private class GetFollowersTask extends AsyncTask<Void, Void, ServerResponse> {
@@ -223,7 +205,7 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
                 Response response = client.newCall(request).execute();
                 String body = response.body().string();
 
-                return new ArrayServerResponse(body);
+                return new StringServerResponse(body);
             } catch (IOException | JSONException | NullPointerException e) {
                 e.printStackTrace();
                 return null;
@@ -238,7 +220,7 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
                 if (response.getStatus()) {
                     // Got Response
                     Toast.makeText(Search.this, "You are following the user now!", Toast.LENGTH_SHORT).show();
-                    toggleFollowButton(false);
+                    toggleFollow.setText(UN_FOLLOW);
                 } else {
                     Toast.makeText(Search.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
@@ -268,7 +250,7 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
                 Response response = client.newCall(request).execute();
                 String body = response.body().string();
 
-                return new ArrayServerResponse(body);
+                return new StringServerResponse(body);
             } catch (IOException | JSONException | NullPointerException e) {
                 e.printStackTrace();
                 return null;
@@ -281,9 +263,8 @@ public class Search extends AppCompatActivity implements SearchUserAutoCompleteA
                 Toast.makeText(Search.this, "Server error", Toast.LENGTH_SHORT).show();
             } else {
                 if (response.getStatus()) {
-                    //Got Response
                     Toast.makeText(Search.this, "You have un-followed the user!", Toast.LENGTH_SHORT).show();
-                    toggleFollowButton(true);
+                    toggleFollow.setText(FOLLOW);
                 } else {
                     Toast.makeText(Search.this, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     if (response.getErrorMessage().equalsIgnoreCase("Invalid session")) {
