@@ -174,6 +174,12 @@ public class DBHandler {
                 if (commSt.executeUpdate() > 0) {
                     obj.put("status", true);
                     obj.put("data", "user followed " + uid2);
+                    int noRowsUpdated = setUserLatestPostOffset(conn, uid1, 0);
+                    if (noRowsUpdated > 0) {
+                        System.out.println("offset updated");
+                    } else {
+                        System.out.println("offset not updated");
+                    }
                 } else {
                     obj.put("status", false);
                     obj.put("message", "could not follow");
@@ -204,6 +210,12 @@ public class DBHandler {
                 if (commSt.executeUpdate() > 0) {
                     obj.put("status", true);
                     obj.put("data", "unFollowed " + uid2);
+                    int noRowsUpdated = setUserLatestPostOffset(conn, uid1, 0);
+                    if (noRowsUpdated > 0) {
+                        System.out.println("offset updated");
+                    } else {
+                        System.out.println("offset not updated");
+                    }
                 } else {
                     obj.put("status", false);
                     obj.put("message", "could not unFollow");
