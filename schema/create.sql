@@ -13,6 +13,7 @@ CREATE TABLE "user" (
   uid   VARCHAR(20),
   name  VARCHAR(20) NOT NULL,
   email VARCHAR(30),
+  latest_post_offset INT DEFAULT 0,
   PRIMARY KEY (uid)
 );
 

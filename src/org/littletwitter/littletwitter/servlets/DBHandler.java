@@ -121,22 +121,32 @@ public class DBHandler {
         return json;
     }
 
-    public static JSONArray seePosts(String id, int offset, int limit) {
-        JSONArray json = new JSONArray();
+    public static JSONObject seePosts(String id, int offset, int limit) {
+        JSONObject obj = new JSONObject();
         String query = "SELECT postid, timestamp, uid, text, image FROM post WHERE post.uid IN (SELECT uid2 FROM follows WHERE uid1 = ? UNION SELECT uid FROM \"user\" WHERE uid=? ) ORDER BY timestamp ASC OFFSET ? LIMIT ?";
         try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
              PreparedStatement postSt = conn.prepareStatement(query)) {
+            if (offset == -1) {
+                offset = getUserLatestPostOffset(conn, id);
+            }
             postSt.setString(1, id);
             postSt.setString(2, id);
             postSt.setInt(3, offset);
             postSt.setInt(4, limit);
             ResultSet rs = postSt.executeQuery();
-            json = resultSetConverter(rs);
-            return json;
+            JSONArray posts = resultSetConverter(rs);
+            int noRowsUpdated = setUserLatestPostOffset(conn, id, offset + posts.length());
+            if (noRowsUpdated > 0) {
+                System.out.println("offset updated");
+            } else {
+                System.out.println("offset not updated");
+            }
+            obj.put("posts", posts);
+            obj.put("offsetUsed", offset);
         } catch (SQLException | JSONException e) {
             e.printStackTrace();
         }
-        return json;
+        return obj;
     }
 
     public static JSONArray getComments(int postId) {
@@ -279,4 +289,22 @@ public class DBHandler {
         }
         return json;
     }
+
+    private static int setUserLatestPostOffset(Connection conn, String userId, int offset) throws SQLException {
+        String query = "UPDATE \"user\" SET latest_post_offset = ? WHERE uid = ?";
+        PreparedStatement prepStatement = conn.prepareStatement(query);
+        prepStatement.setInt(1, offset);
+        prepStatement.setString(2, userId);
+        return prepStatement.executeUpdate();
+    }
+
+    private static int getUserLatestPostOffset(Connection conn, String userId) throws SQLException {
+        String query = "SELECT latest_post_offset FROM \"user\" WHERE uid = ?";
+        PreparedStatement prepStatement = conn.prepareStatement(query);
+        prepStatement.setString(1, userId);
+        ResultSet result = prepStatement.executeQuery();
+        result.next();
+        return result.getInt(1);
+    }
+
 }

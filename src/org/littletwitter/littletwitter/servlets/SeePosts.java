@@ -29,13 +29,8 @@ public class SeePosts extends HttpServlet {
                 e.printStackTrace();
             }
         } else {
-            int offset = 0;
-            int limit = 1000;
-            request.getSession();
-            if (request.getParameter("offset") != null)
-                offset = Integer.parseInt(request.getParameter("offset"));
-            if (request.getParameter("limit") != null)
-                limit = Integer.parseInt(request.getParameter("limit"));
+            int offset = Integer.parseInt(request.getParameter("offset"));
+            int limit = Integer.parseInt(request.getParameter("limit"));
             String id = (String) request.getSession().getAttribute("userId");
             try {
                 obj.put("status", true);
