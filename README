@@ -1,7 +1,8 @@
 #. open this dir as project in eclipse
 #. all jar files are in lib/ dir
 #. configure the buildpath with el-api.jar, jsp-api.jar, servlet-api.jar, java-json.jar
-#. configure the bootstrap of tomcat with postgresql jar file
+#. create a new tomcat 8.5 server
+#. add all the jars in lib/ dir to bootstrap of tomcat server
 #. ./src/org/littletwitter/littletwitter/servlets/DBHandler.java contains db credential fields
 #. create.sql re-sets the tables
 #. data.sql adds some sample data
