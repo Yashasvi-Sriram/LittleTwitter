@@ -9,17 +9,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.littletwitter.littletwitter.R;
 import org.littletwitter.littletwitter.beans.Post;
 import org.littletwitter.littletwitter.customadapters.PostListAdapter;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
+import org.littletwitter.littletwitter.responses.ObjectServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 
 import java.io.IOException;
@@ -31,7 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class InfinitePostListFragment extends Fragment {
+public class PersistentInfinitePostListFragment extends Fragment {
 
     private final int limit = 10;
     private int offset;
@@ -74,7 +77,6 @@ public class InfinitePostListFragment extends Fragment {
                     int pastVisibleItems = postListViewLayoutManager.findFirstVisibleItemPosition();
                     if (!fetchingPostBatch && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         fetchingPostBatch = true;
-                        Snackbar.make(postListView, "Getting more posts", Snackbar.LENGTH_SHORT).show();
                         fetchNextBatchOfPosts();
                     }
                 }
@@ -100,8 +102,7 @@ public class InfinitePostListFragment extends Fragment {
         client = activityAPI.getClient();
 
         // Init
-        Snackbar.make(postListView, "Getting posts", Snackbar.LENGTH_SHORT).show();
-        startFromFirstBatch();
+        fetchBatchFromPreviousOffset();
     }
 
     public interface ActivityAPI {
@@ -115,11 +116,19 @@ public class InfinitePostListFragment extends Fragment {
     }
 
     private void startFromFirstBatch() {
+        Snackbar.make(postListView, "Getting posts from beginning", Snackbar.LENGTH_SHORT).show();
         offset = 0;
         new PostFetchTask().execute();
     }
 
+    private void fetchBatchFromPreviousOffset() {
+        Snackbar.make(postListView, "Getting new posts", Snackbar.LENGTH_SHORT).show();
+        offset = -1;
+        new PostFetchTask().execute();
+    }
+
     private void fetchNextBatchOfPosts() {
+        Snackbar.make(postListView, "Getting more posts", Snackbar.LENGTH_SHORT).show();
         new PostFetchTask().execute();
     }
 
@@ -143,7 +152,7 @@ public class InfinitePostListFragment extends Fragment {
                 Response response = client.newCall(request).execute();
                 String body = response.body().string();
 
-                return new ArrayServerResponse(body);
+                return new ObjectServerResponse(body);
             } catch (IOException | JSONException | NullPointerException e) {
                 e.printStackTrace();
                 return null;
@@ -158,14 +167,18 @@ public class InfinitePostListFragment extends Fragment {
             } else {
                 if (response.getStatus()) {
                     try {
-                        ArrayServerResponse a = (ArrayServerResponse) response;
+                        ObjectServerResponse a = (ObjectServerResponse) response;
+                        JSONArray jPosts = a.getData().getJSONArray("posts");
                         List<Post> posts = new ArrayList<>();
-                        for (int i = 0; i < a.getData().length(); i++) {
-                            Post post = new Post(a.getData().getJSONObject(i));
+                        for (int i = 0; i < jPosts.length(); i++) {
+                            Post post = new Post(jPosts.getJSONObject(i));
                             posts.add(post);
                         }
-                        // reset post list view
-                        if (offset == 0) {
+                        // for offset = -1 case actual offset used is set
+                        // for other cases it is just reassigning the same value
+                        offset = a.getData().getInt("offsetUsed");
+                        if (offset == 0 || postListAdapter == null) {
+                            // reset post list view
                             postListAdapter = new PostListAdapter(posts, context, client);
                             postListView.setAdapter(postListAdapter);
                         } else {
@@ -175,17 +188,19 @@ public class InfinitePostListFragment extends Fragment {
                             }
                         }
                         // last batch
-                        if (a.getData().length() < limit) {
+                        int noPostsFetched = jPosts.length();
+                        if (noPostsFetched < limit) {
                             offset -= limit;
-                            offset += a.getData().length();
+                            offset += noPostsFetched;
                         }
-                        if (a.getData().length() == 0) {
-                            Snackbar.make(postListView, "End of posts!", Snackbar.LENGTH_SHORT).show();
+                        if (noPostsFetched == 0) {
+                            Snackbar.make(postListView, "End of posts! You might have seen all your posts. Swipe down to see posts from beginning", Snackbar.LENGTH_INDEFINITE).show();
                         }
                         offset += limit;
+
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(context, "Client doesn't seem to know server well", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Client doesn't seem to know server well", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(context, response.getErrorMessage(), Toast.LENGTH_SHORT).show();
@@ -197,8 +212,6 @@ public class InfinitePostListFragment extends Fragment {
             fetchingPostBatch = false;
         }
 
-
     }
-
 
 }

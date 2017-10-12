@@ -39,6 +39,7 @@ import org.littletwitter.littletwitter.cookies.UniversalCookieJar;
 import org.littletwitter.littletwitter.cookies.UniversalCookiePersistor;
 import org.littletwitter.littletwitter.customadapters.PostListAdapter;
 import org.littletwitter.littletwitter.fragments.InfinitePostListFragment;
+import org.littletwitter.littletwitter.fragments.PersistentInfinitePostListFragment;
 import org.littletwitter.littletwitter.responses.ArrayServerResponse;
 import org.littletwitter.littletwitter.responses.ServerResponse;
 import org.littletwitter.littletwitter.responses.StringServerResponse;
@@ -52,7 +53,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, InfinitePostListFragment.ActivityAPI {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PersistentInfinitePostListFragment.ActivityAPI {
 
     private DrawerLayout drawerLayout;
     private OkHttpClient client;

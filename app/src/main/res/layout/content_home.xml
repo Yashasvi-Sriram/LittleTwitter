@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/infinite_posts_fragment"
-        class="org.littletwitter.littletwitter.fragments.InfinitePostListFragment"
+        class="org.littletwitter.littletwitter.fragments.PersistentInfinitePostListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/infinite_post_list_fragment" />
