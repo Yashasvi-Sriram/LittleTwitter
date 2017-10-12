@@ -1,0 +1,5 @@
+#. open this dir from android studio
+#. configure url in class
+	./app/src/main/java/org/littletwitter/littletwitter/configuration/URLSource.java
+#. make sure that wifi is on & server is running on same network
+#. run the app
